@@ -1,35 +1,32 @@
 { config, pkgs, lib, ... }:
 let
-   nix-alien =
-     import (
-       fetchTarball https://github.com/thiagokokada/nix-alien/tarball/master
-     ) {};
+   # nix-alien =
+   #   import (
+   #     fetchTarball https://github.com/thiagokokada/nix-alien/tarball/master
+   #   ) {};
 
    my_df = pkgs.dwarf-fortress.override {
      enableIntro = false; enableSound = false;
    };
 
-   unstableTarball =
-     fetchTarball
-       https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz;
+   # unstableTarball =
+   #   fetchTarball
+   #     https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz;
 in
 {
   # Touch pad 
   # services.xserver.libinput.enable = false;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nixpkgs.config = {
-    allowUnfree = true;
-    packageOverrides = pkgs: {
-      unstable = import unstableTarball {
-        config = config.nixpkgs.config;
-      };
-    };
-  };
+  #nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nixpkgs.config.allowUnfree = true;
+  #   packageOverrides = pkgs: {
+  #     unstable = import unstableTarball {
+  #       config = config.nixpkgs.config;
+  #     };
+  #   };
+  # };
 
   hardware.opengl.driSupport = true;
   #hardware.opengl.driSupport32Bit = true;
-  # if gpu locks screen on bootup
-  # boot.blacklistedKernelModules = [ "i915" ];
 
   imports =
   [
@@ -96,7 +93,7 @@ in
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs;
     [
-      unstable.discord
+      #unstable.discord
 
       flameshot
       tree
@@ -104,7 +101,7 @@ in
       gnumake
       texlive.combined.scheme-context      
       file
-      dolphin-emu
+      #dolphin-emu
       elementary-planner
       zeroad
       
@@ -112,11 +109,11 @@ in
       ripgrep
       emacs
       firefox
-      tor-browser-bundle-bin
+      #tor-browser-bundle-bin
       
       vscode
       kitty
-      kitty-themes
+      #kitty-themes
       diff-so-fancy
       xclip
       git
@@ -132,10 +129,10 @@ in
       gparted
       tmux
       powershell
-      btop
+      #btop
       htop
-      bmon
-      ghidra-bin
+      #bmon
+      #ghidra-bin
       
       dig
       nmap
@@ -146,29 +143,29 @@ in
       steamcmd
       thunderbird
       signal-desktop
-      node2nix
+      #node2nix
       nodejs
       xdg-utils      
       nodePackages.rimraf
       nodePackages.typescript
       vulnix
-      nix-alien.nix-alien
-      nix-alien.nix-index-update
+      #nix-alien.nix-alien
+      #nix-alien.nix-index-update
       nix-index
       font-manager 
       wireguard-tools
-      starship      
+      #starship
       libreoffice-fresh     
       rust-analyzer
       yara # malware 
-      virtualenv
+      #virtualenv
       openvpn
       obsidian
 
       anydesk
       clang-tools
       lldb
-      helix
+      #helix
       #cargo
       clang
       #rust-analyzer
@@ -215,71 +212,6 @@ in
         "..." = "cd ../..";
         vol = "pactl -- set-sink-volume 0";
         dmesg="dmesg --color=always";
-    };
-  };
-
-
-  programs.starship.enable = true;
-
-  programs.starship.settings = {
-    add_newline = false;
-    format = "$shlvl$shell$username$hostname$nix_shell$git_branch$git_commit$git_state$git_status$directory$jobs$cmd_duration$character";
-    shlvl = {
-      disabled = false;
-      symbol = "ﰬ";
-      style = "bright-red bold";
-    };
-    shell = {
-      disabled = false;
-      format = "$indicator";
-      fish_indicator = "";
-      bash_indicator = "[BASH](bright-white) ";
-      zsh_indicator = "[ZSH](bright-white) ";
-    };
-    username = {
-      style_user = "bright-white bold";
-      style_root = "bright-red bold";
-    };
-    hostname = {
-      style = "bright-green bold";
-      ssh_only = true;
-    };
-    nix_shell = {
-      symbol = "";
-      format = "[$symbol$name]($style) ";
-      style = "bright-purple bold";
-    };
-    git_branch = {
-      only_attached = true;
-      format = "[$symbol$branch]($style) ";
-      symbol = "שׂ";
-      style = "bright-yellow bold";
-    };
-    git_commit = {
-      only_detached = true;
-      format = "[ﰖ$hash]($style) ";
-      style = "bright-yellow bold";
-    };
-    git_state = {
-      style = "bright-purple bold";
-    };
-    git_status = {
-      style = "bright-green bold";
-    };
-    directory = {
-      read_only = " ";
-      truncation_length = 0;
-    };
-    cmd_duration = {
-      format = "[$duration]($style) ";
-      style = "bright-blue";
-    };
-    jobs = {
-      style = "bright-green bold";
-    };
-    character = {
-      success_symbol = "[\\$](bright-green bold)";
-      error_symbol = "[\\$](bright-red bold)";
     };
   };
 
