@@ -5,10 +5,10 @@
     nix-doom-emacs.hmModule
     nur.hmModules.nur
   ];
-
   programs.doom-emacs = {
      enable = true;
      doomPrivateDir = ./doom; 
+     extraPackages = [ pkgs.ripgrep ];
   };
   
   # Home Manager needs a bit of information about you and the
