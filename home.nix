@@ -123,6 +123,7 @@
       usernamehw.errorlens
       stephlin.vscode-tmux-keybinding
       github.copilot
+      vspacecode.vspacecode
     ];
     # enableExtensionUpdateCheck = false;
 
