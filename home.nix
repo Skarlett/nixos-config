@@ -1,4 +1,4 @@
-{ config, lib, pkgs, nix-doom-emacs, nur, ... }:
+{ self, config, lib, pkgs, nur, nix-doom-emacs, ... }:
 {
   nixpkgs.overlays = [ nur.overlay ];
   imports = [ 
@@ -69,7 +69,7 @@
       openvpn
       obsidian
       anydesk
-      #clang-tools
+
       lldb
       glfw
       clang
@@ -79,8 +79,12 @@
       unstable.rustc
       rust-analyzer
 
+      (pkgs.dwarf-fortress.override {
+          enableIntro = false;
+          enableSound = false;
+      })
+
       tor-browser-bundle-bin
-      # transmission
       transmission-gtk
       prismlauncher      
       man-pages
