@@ -25,7 +25,7 @@
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [ 
-      cowsay 
+       
       firefox
       unstable.discord
       pulseaudio
@@ -104,6 +104,7 @@
   programs.vscode = {
     package = pkgs.unstable.vscode;
     enable = true;
+    keybindings = builtins.fromJSON (builtins.readFile ./keybindings.json);
     extensions = with pkgs.unstable.vscode-extensions; [
       bbenoist.nix
       vadimcn.vscode-lldb
@@ -123,11 +124,24 @@
       usernamehw.errorlens
       stephlin.vscode-tmux-keybinding
       github.copilot
+
+      vspacecode.whichkey
       vspacecode.vspacecode
     ];
     # enableExtensionUpdateCheck = false;
 
     userSettings = {
+      "whichkey.delay" = 900;
+      "workbench.quickOpen.delay"= 900;
+      "vspacecode.bindingOverrides" = [
+       {
+          "name" = "Git log";
+          "type" = "command";
+          "keys" = "g.g";
+          "command" = "magit.status";
+       }
+      ];
+      "vim.easymotion" = true;
       "workbench.colorTheme" = "Default Dark+";
       "rust-analyzer.procMacro.enable" = false;
       "rust-analyzer.procMacro.attributes.enable" = false;
