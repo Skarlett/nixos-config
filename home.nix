@@ -6,9 +6,9 @@
     nur.hmModules.nur
   ];
   programs.doom-emacs = {
-     enable = true;
-     doomPrivateDir = ./doom; 
-     extraPackages = [ pkgs.ripgrep ];
+      enable = true;
+      doomPrivateDir = ./doom; 
+      extraPackages = [ pkgs.ripgrep ];
   };
   
   # Home Manager needs a bit of information about you and the
@@ -25,7 +25,6 @@
   programs.home-manager.enable = true;
 
   home.packages = with pkgs; [ 
-       
       firefox
       unstable.discord
       pulseaudio
@@ -37,7 +36,6 @@
       
       sonixd
       texlive.combined.scheme-context
-
       zeroad
       ripgrep
       ispell
@@ -92,12 +90,12 @@
   ];
   
   programs.firefox = {
-     enable = true;
-     extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-       privacy-badger
-       darkreader
-       keepassxc-browser
-       ublock-origin
+      enable = true;
+      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          privacy-badger
+          darkreader
+          keepassxc-browser
+          ublock-origin
     ];
   };
 
@@ -106,42 +104,83 @@
     enable = true;
     keybindings = builtins.fromJSON (builtins.readFile ./keybindings.json);
     extensions = with pkgs.unstable.vscode-extensions; [
+      arrterian.nix-env-selector
       bbenoist.nix
-      vadimcn.vscode-lldb
+      eamodio.gitlens
+      github.copilot
+      github.vscode-pull-request-github
+      kahole.magit
       matklad.rust-analyzer
-      ms-vscode.makefile-tools
+      ms-python.vscode-pylance
+      ms-vscode-remote.remote-ssh
       ms-vscode.cmake-tools
       ms-vscode.cpptools
-      ms-vscode.theme-tomorrowkit
       ms-vscode.hexeditor
-      ms-vscode-remote.remote-ssh
+      ms-vscode.makefile-tools
+      ms-vscode.theme-tomorrowkit
       ms-vsliveshare.vsliveshare
-      kahole.magit
-      ms-python.vscode-pylance
-      arrterian.nix-env-selector
-      WakaTime.vscode-wakatime
-      vscodevim.vim
-      usernamehw.errorlens
       stephlin.vscode-tmux-keybinding
-      github.copilot
-
-      vspacecode.whichkey
+      usernamehw.errorlens
+      vadimcn.vscode-lldb
+      vscodevim.vim
       vspacecode.vspacecode
+      vspacecode.whichkey
+      WakaTime.vscode-wakatime
+      bodil.file-browser
+    ]
+    ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+      {
+        name = "vscode-indent-line";
+        publisher = "sandipchitale";
+        version = "1.0.1";
+        sha256 = "Zygw5XOEEF4Fj7IZyuC+ZKCG8Yb3B0WsD+OwmDBQiMk=";
+      }
     ];
-    # enableExtensionUpdateCheck = false;
 
     userSettings = {
       "whichkey.delay" = 900;
       "workbench.quickOpen.delay"= 900;
       "vspacecode.bindingOverrides" = [
-       {
+        {
           "name" = "Git log";
           "type" = "command";
           "keys" = "g.g";
           "command" = "magit.status";
-       }
+        }
+        {
+          "name" = "Terminal";
+          "type" = "command";
+          "keys" = "x";
+          "command" = "workbench.action.terminal.focus";
+        }
+        {
+          "name" = "Reload window";
+          "command" = "workbench.action.reloadWindow";
+          "keys" = "w.r";
+          "type" = "command";
+        }
+        {
+          "name" = "close window";
+          "type" = "command";
+          "keys" = "w.q";
+          "command" = "workbench.action.closePanel";
+        }
+        {
+          "name" = "Find files";
+          "type" = "command";
+          "keys" = "f.f";
+          "command" = "file-browser.open";
+        }
+        {
+          "name" = "Open Recent";
+          "type" = "command";
+          "keys" = " ";
+          "command" = "workbench.action.quickOpen";
+        }
       ];
+      "editor.autoIndent" = "full";
       "vim.easymotion" = true;
+      "vim.useSystemClipboard" = true;
       "workbench.colorTheme" = "Default Dark+";
       "rust-analyzer.procMacro.enable" = false;
       "rust-analyzer.procMacro.attributes.enable" = false;

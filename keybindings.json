@@ -1,5 +1,10 @@
 [
 	{
+		"key": "ctrl+tab",
+       "command": "indent-line.indentLine",
+	   "when": "editorTextFocus && !editorHasInlineCompletionProvider"
+	},
+	{
 		"key": "space",
 		"command": "vspacecode.space",
 		"when": "!whichkeyActive && editorFocus && vim.mode == 'Normal' || activeEditorGroupEmpty && focusedView == '' && !whichkeyActive && !inputFocus"
@@ -8,16 +13,6 @@
 		"key": "space",
 		"command": "vspacecode.space",
 		"when": "sideBarFocus && !inputFocus && !whichkeyActive"
-	},
-	{
-		"key": "tab",
-		"command": "extension.vim_tab",
-		"when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert' && editorLangId != 'magit'"
-	},
-	{
-		"key": "tab",
-		"command": "-extension.vim_tab",
-		"when": "editorFocus && vim.active && !inDebugRepl && vim.mode != 'Insert'"
 	},
 	{
 		"key": "x",
@@ -77,10 +72,23 @@
 		"command": "workbench.action.quickOpenSelectNext",
 		"when": "inQuickOpen"
 	},
+    {
+		"key": "ctrl+x 3",
+		"command": "workbench.action.splitEditorLeft"
+	},
+    {
+		"key": "ctrl+x 2",
+		"command": "workbench.action.splitEditorDown"
+	},
 	{
-		"key": "ctrl+k",
-		"command": "workbench.action.quickOpenSelectPrevious",
-		"when": "inQuickOpen"
+		"key": "escape",
+		"command": "workbench.action.terminal.toggleTerminal",
+		"when": "terminalFocus"
+	},
+	{
+		"key": "escape",
+		"command": "workbench.action.closeSidebar",
+		"when": "sideBarFocus"
 	},
 	{
 		"key": "ctrl+j",
