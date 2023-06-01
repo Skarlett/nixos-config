@@ -20,7 +20,7 @@
   # the Home Manager release notes for a list of state version
   # changes in each release.
   home.stateVersion = "22.11";
-
+  programs.fish.enable = true;
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
@@ -71,7 +71,7 @@
       lldb
       glfw
       clang
-      python2
+      # python2
       rustfmt
       unstable.cargo
       unstable.rustc
@@ -84,19 +84,35 @@
 
       tor-browser-bundle-bin
       transmission-gtk
-      prismlauncher      
+      
       man-pages
       man-pages-posix
   ];
   
   programs.firefox = {
       enable = true;
-      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      profiles.lunarix = {
+	extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           privacy-badger
           darkreader
           keepassxc-browser
           ublock-origin
-    ];
+        ];
+      
+        settings = {
+	  "browser.search.region" = "US";
+	  "browser.search.isUS" = true;
+	  "distribution.searchplugins.defaultLocale" = "en-US";
+	  "general.useragent.locale" = "en-US";
+	 "browser.newtabpage.pinned" = [{
+	      title = "Search NixOS";
+	      url = "https://search.nixos.org";
+	  }];
+	  # set to dark modew
+	  "browser.theme.content-theme" = 2;
+	  "browser.theme.toolbar-theme" = 2;
+        };
+     };
   };
 
   programs.vscode = {

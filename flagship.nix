@@ -60,7 +60,8 @@
       options = "--delete-older-than 30d";
     };
   };
-
+  
+  programs.fish.enable = true;
   users.users.root = {
     shell = pkgs.fish;
   };
@@ -71,9 +72,14 @@
     description = "pewter";
     extraGroups = [ "networkmanager" "wheel" "audio" ];
   };
+
   nixpkgs.config.permittedInsecurePackages = [
-    "python-2.7.18.6"
+    "openssl-1.1.1u"
   ];
+
+  #nixpkgs.config.permittedInsecurePackages = [
+  #  "python-2.7.18.6"
+  #];
 
   documentation.dev.enable = true;
   #documentation.dev.generateCaches = true;
