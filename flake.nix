@@ -22,20 +22,19 @@
   }:
     let
       system = "x86_64-linux";
-      sshkey="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILcon6Pn5nLNXEuLH22ooNR97ve290d2tMNjpM8cTm2r lunarix@masterbook";
       pkgs = import nixpkgs { inherit system; };
     in {
-      nixosConfigurations.flagship =
+      nixosConfigurations.java =
         nixpkgs.lib.nixosSystem
           {
             inherit system;
             specialArgs = { inherit self; };
             modules = [
-              ./flagship.nix
+              ./configuration.nix
 	      
               nur.nixosModules.nur
               ({lib, config, ...}: {
-                networking.hostName = "flagship";
+                networking.hostName = "java";
                 nix.registry.nixpkgs.flake = nixpkgs;
                 nixpkgs.config.allowUnfree = true;
                 nixpkgs.overlays = [
