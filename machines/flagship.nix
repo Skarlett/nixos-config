@@ -7,11 +7,12 @@
 {
 
   imports = [
-    ./hardware-configuration.nix
     self.inputs.nix-ld.nixosModules.nix-ld
   ];
 
+  nix.settings.trusted-users = [ "lunarix" ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  
   hardware.opengl = {
     driSupport = true;
     driSupport32Bit = true;
@@ -42,65 +43,30 @@
 
   services.xserver = {
     enable = true;
-    layout = "us";
-    xkbVariant = "";
     displayManager.lightdm.enable = true;
     desktopManager.cinnamon.enable = true;
     videoDrivers = [ "nvidia" ];
   };
-
-  nix = {
-    settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-      auto-optimise-store = true;
-    };
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 30d";
-    };
-  };
-  
-  programs.fish.enable = true;
-  users.users.root = {
-    shell = pkgs.fish;
-  };
-
-  users.users.lunarix = {
-    shell = pkgs.fish;
-    isNormalUser = true;
-    description = "pewter";
-    extraGroups = [ "networkmanager" "wheel" "audio" ];
-  };
-
   nixpkgs.config.permittedInsecurePackages = [
-    "openssl-1.1.1u"
+    "openssl-1.1.1u" # steam
   ];
-
-  #nixpkgs.config.permittedInsecurePackages = [
-  #  "python-2.7.18.6"
-  #];
-
+ 
   documentation.dev.enable = true;
-  #documentation.dev.generateCaches = true;
-  
-  programs.fish = { inherit (import ./fish.nix);};
   environment.systemPackages = with pkgs; [
-     nfs-utils
-     man-pages
-     man-pages-posix
-     lsd
-     bat
-     unzip
-     vim
-     wget
-     tor
-     parted
-     fish
-     lsof
-     binutils
-     file
-     nixfmt
+    nfs-utils
+    lsd
+    bat
+    unzip
+    vim
+    wget
+    tor
+    parted
+    fish
+    lsof
+    binutils
+    file
+    nixfmt
+    self.inputs.deploy.packages."x86_64-linux".default
   ];
 
   services.printing.enable = true;
@@ -109,25 +75,25 @@
     allowedUDPPorts = [ 51820 ]; # Clients and peers can use the same port, see listenport
   };
 
-  services.syncthing = {
-    enable = true;
-    user = "lunarix";
-    dataDir = "/home/lunarix/Sync";
-    configDir = "/home/lunarix/.config/syncthing";
+  # services.syncthing = {
+  #   enable = true;
+  #   user = "lunarix";
+  #   dataDir = "/home/lunarix/Sync";
+  #   configDir = "/home/lunarix/.config/syncthing";
 
-    overrideDevices = false;
-    overrideFolders = false;
-    devices = {
-      # "coggie" = { id = "DEVICE-ID-GOES-HERE"; };
-    };
+  #   overrideDevices = false;
+  #   overrideFolders = false;
+  #   devices = {
+  #     # "coggie" = { id = "DEVICE-ID-GOES-HERE"; };
+  #   };
 
-    folders = {
-      "Sync" = {
-        path = "/home/lunarix/Sync";
-        devices = [  ];
-      };
-    };
-  };
+  #   folders = {
+  #     "Sync" = {
+  #       path = "/home/lunarix/Sync";
+  #       devices = [  ];
+  #     };
+  #   };
+  # };
 
   services.tor.enable = true;
   services.tor.client.enable = true;

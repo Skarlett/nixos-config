@@ -1,64 +1,103 @@
 {
   description = "NixOS configuration";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    nix-alien.url = "github:thiagokokada/nix-alien";
-    nix-ld.url = "github:Mic92/nix-ld/main";
-    hm.url = "github:nix-community/home-manager/release-23.05";
-    nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+    racoon.url = "github:nixos/nixpkgs/nixos-22.11";
     nur.url = "github:nix-community/NUR";
+    nix-doom-emacs = { url = "github:nix-community/nix-doom-emacs"; };
+    nix-alien = { url = "github:thiagokokada/nix-alien"; };
+    nix-ld = { url = "github:Mic92/nix-ld/main"; };
+    hm = { url = "github:nix-community/home-manager/release-23.05"; };
+    # serects.url = "git:secrets";
+    agenix.url = "github:ryantm/agenix";
+    deploy.url = "github:serokell/deploy-rs";
   };
 
-  outputs = {
-    self
-    , nixpkgs
-    , nixpkgs-unstable
-    , hm
-    , nix-alien
-    , nix-ld
-    , nix-doom-emacs
-    , nur
-  }:
-    let
-      system = "x86_64-linux";
-      sshkey="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILcon6Pn5nLNXEuLH22ooNR97ve290d2tMNjpM8cTm2r lunarix@masterbook";
-      pkgs = import nixpkgs { inherit system; };
-    in {
-      nixosConfigurations.flagship =
-        nixpkgs.lib.nixosSystem
-          {
-            inherit system;
-            specialArgs = { inherit self; };
-            modules = [
-              ./flagship.nix
-	      
-              nur.nixosModules.nur
-              ({lib, config, ...}: {
-                networking.hostName = "flagship";
-                nix.registry.nixpkgs.flake = nixpkgs;
-                nixpkgs.config.allowUnfree = true;
-                nixpkgs.overlays = [
-                  (final: prev: {
-                    unstable = import nixpkgs-unstable {
-                        system = pkgs.stdenv.hostPlatform.system;
-                        config.allowUnfree = true;
-                    };
-                  })
-                  nur.overlay
-                  nix-alien.overlays.default
-                ];})
-
-              hm.nixosModules.home-manager
-              {
-                home-manager.useGlobalPkgs = true;
-                home-manager.useUserPackages = true;
-                home-manager.users.lunarix = import ./home.nix ;
-                home-manager.extraSpecialArgs = {
-                  inherit self nix-doom-emacs nur;
+  outputs = inputs:
+    let 
+        keys = import ./keys.nix;
+        system = "x86_64-linux";
+        specialArgs = { inherit (inputs) self; inherit keys; };
+    in
+    {
+      nixosConfigurations.flagship = inputs.nixpkgs.lib.nixosSystem {
+        inherit system specialArgs;
+        modules = [
+          ./modules/common.nix
+          ./machines/flagship.nix
+          ./machines/flagship.hardware.nix
+          inputs.nur.nixosModules.nur
+          inputs.agenix.nixosModules.default
+          ({ lib, config, ... }: {
+            networking.hostName = "flagship";
+            nixpkgs.overlays = [
+              (final: prev: {
+                unstable = import inputs.nixpkgs-unstable {
+                  inherit system;
+                  config.allowUnfree = true;
                 };
-              }
+              })
+              inputs.nur.overlay
+              inputs.nix-alien.overlays.default
             ];
-          };
+          })
+
+          inputs.hm.nixosModules.home-manager
+          {
+            home-manager.users.lunarix = import ./home.nix;
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = {
+              inherit (inputs) self nix-doom-emacs nur;
+            };
+          }
+        ];
+      };
+
+      nixosConfigurations.live-iso = inputs.nixpkgs.lib.nixosSystem {
+        inherit system specialArgs;
+        modules = [
+          ./modules/common.nix
+          ./modules/accessible.nix
+          ({config, lib, pkgs, ...}: {
+            networking.hostName = "liveiso";
+            services.openssh.enable = true;
+            system.stateVersion = "23.05";
+            services.xserver = {
+              enable = true;
+              displayManager.lightdm.enable = true;
+              desktopManager.cinnamon.enable = true;
+            };
+            networking.networkmanager.enable = true;
+            environment.systemPackages = [ pkgs.nixos-install-tools ];
+          })
+        ];
+      };
+
+      nixosConfigurations.coggie = inputs.nixpkgs.lib.nixosSystem {
+        inherit specialArgs;
+        system = "aarch64-linux";
+        modules = [
+          "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+          ./machines/coggie.nix
+          ./machines/coggie.hardware.nix
+          ./modules/common.nix
+          ./modules/accessible.nix
+        ];
+      };
+      # deploy-rs node configuration
+      deploy.nodes.coggie = {
+        hostname = "10.0.0.245";
+        profiles.system = {
+          sshUser = "lunarix";
+          sshOpts = [ "-t" ];
+          magicRollback = false;
+          path =
+            inputs.deploy.lib.aarch64-linux.activate.nixos
+              inputs.self.nixosConfigurations.coggie;
+          user = "root";
+        };
+      };
     };
 }
