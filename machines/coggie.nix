@@ -18,7 +18,7 @@
 
   nix.settings.trusted-public-keys = [
     keys.flagship.store
-  ];
+  ]; 
 
   documentation.man.generateCaches = lib.mkForce false;
   environment.systemPackages = with pkgs; [
