@@ -1,4 +1,4 @@
-{config, lib, ...}:
+{config, lib, pkgs, ...}:
 {
     programs.vscode = {
         package = pkgs.unstable.vscode;
@@ -37,54 +37,55 @@
         }];
 
         userSettings = {
-        "whichkey.delay" = 900;
-        "workbench.quickOpen.delay" = 900;
-        "vspacecode.bindingOverrides" = [
-            {
-            "name" = "Git log";
-            "type" = "command";
-            "keys" = "g.g";
-            "command" = "magit.status";
-            }
-            {
-            "name" = "Terminal";
-            "type" = "command";
-            "keys" = "x";
-            "command" = "workbench.action.terminal.focus";
-            }
-            {
-            "name" = "Reload window";
-            "command" = "workbench.action.reloadWindow";
-            "keys" = "w.r";
-            "type" = "command";
-            }
-            {
-            "name" = "close window";
-            "type" = "command";
-            "keys" = "w.q";
-            "command" = "workbench.action.closePanel";
-            }
-            {
-            "name" = "Find files";
-            "type" = "command";
-            "keys" = "f.f";
-            "command" = "file-browser.open";
-            }
-            {
-            "name" = "Open Recent";
-            "type" = "command";
-            "keys" = " ";
-            "command" = "workbench.action.quickOpen";
-            }
-        ];
-        "editor.autoIndent" = "full";
-        "vim.easymotion" = true;
-        "vim.useSystemClipboard" = true;
-        "workbench.colorTheme" = "Default Dark+";
-        "rust-analyzer.procMacro.enable" = false;
-        "rust-analyzer.procMacro.attributes.enable" = false;
-        "editor.inlineSuggest.enabled" = true;
-        "workbench.sideBar.location" = "right";
-        "workbench.colorCustomizations" = { "statusBar.background" = "#822be0"; };
+            "whichkey.delay" = 900;
+            "workbench.quickOpen.delay" = 900;
+            "vspacecode.bindingOverrides" = [
+                {
+                "name" = "Git log";
+                "type" = "command";
+                "keys" = "g.g";
+                "command" = "magit.status";
+                }
+                {
+                "name" = "Terminal";
+                "type" = "command";
+                "keys" = "x";
+                "command" = "workbench.action.terminal.focus";
+                }
+                {
+                "name" = "Reload window";
+                "command" = "workbench.action.reloadWindow";
+                "keys" = "w.r";
+                "type" = "command";
+                }
+                {
+                "name" = "close window";
+                "type" = "command";
+                "keys" = "w.q";
+                "command" = "workbench.action.closePanel";
+                }
+                {
+                "name" = "Find files";
+                "type" = "command";
+                "keys" = "f.f";
+                "command" = "file-browser.open";
+                }
+                {
+                "name" = "Open Recent";
+                "type" = "command";
+                "keys" = " ";
+                "command" = "workbench.action.quickOpen";
+                }
+            ];
+            "editor.autoIndent" = "full";
+            "vim.easymotion" = true;
+            "vim.useSystemClipboard" = true;
+            "workbench.colorTheme" = "Default Dark+";
+            "rust-analyzer.procMacro.enable" = false;
+            "rust-analyzer.procMacro.attributes.enable" = false;
+            "editor.inlineSuggest.enabled" = true;
+            "workbench.sideBar.location" = "right";
+            "workbench.colorCustomizations" = { "statusBar.background" = "#822be0"; };
+        };
     };
-};
+}

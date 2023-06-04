@@ -1,13 +1,13 @@
-{config, self, ...}:
+{self, config, pkgs, ...}:
 {
   nixpkgs.overlays = with self.inputs; [
     (final: prev: {
         unstable = import nixpkgs-unstable {
-          inherit system;
+          inherit (pkgs.stdenv.hostPlatform) system;
           config.allowUnfree = true;
         };
       })
       nur.overlay
-      nix-alien.overlays
+      nix-alien.overlays.default
     ];
 }

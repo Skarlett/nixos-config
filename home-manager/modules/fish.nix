@@ -1,8 +1,7 @@
-  {
+{config, lib, ... }:
+{
+  programs.fish = {
     enable = true;
-    vendor.functions.enable = true;
-    vendor.config.enable = true;
-    vendor.completions.enable = true;
     shellInit = ''
         # Spawns process outside of shell access
         function spawn
@@ -36,4 +35,5 @@
         vol = "pactl -- set-sink-volume 0";
         dmesg="dmesg --color=always";
     };
+  };
 }

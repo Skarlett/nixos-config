@@ -1,0 +1,18 @@
+name: "Nix check"
+on:
+  push:
+    branches: [ "master" ]
+  pull_request: 
+    branches: [ "master" ]
+jobs:
+  nixos-dry-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: cachix/install-nix-action@v20
+      with:
+        nix_path: nixpkgs=channel:nixos-unstable
+        github_access_token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - run: nix build .#nixosConfigurations.flagship.config.system.build.toplevel --dry-run
+    - run: nix build .#nixosConfigurations.coggie.config.system.build.toplevel --dry-run
