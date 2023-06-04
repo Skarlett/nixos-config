@@ -1,6 +1,13 @@
 { self, config, lib, pkgs, nur, nix-doom-emacs, ... }: {
   nixpkgs.overlays = [ nur.overlay ];
-  imports = [ nix-doom-emacs.hmModule nur.hmModules.nur ];
+  imports = with self.inputs; [ 
+    nix-doom-emacs.hmModule
+    nur.hmModules.nur
+    ./modules/vscode
+    ./modules/fish.nix
+    ./modules/firefox.nix  
+  ];
+
   programs.doom-emacs = {
     enable = true;
     doomPrivateDir = ./doom;
@@ -81,121 +88,6 @@
     man-pages
     man-pages-posix
   ];
-
-  programs.firefox = {
-    enable = true;
-    profiles.lunarix = {
-      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-        privacy-badger
-        darkreader
-        keepassxc-browser
-        ublock-origin
-      ];
-
-      settings = {
-        "browser.search.region" = "US";
-        "browser.search.isUS" = true;
-        "distribution.searchplugins.defaultLocale" = "en-US";
-        "general.useragent.locale" = "en-US";
-        "browser.newtabpage.pinned" = [{
-          title = "Search NixOS";
-          url = "https://search.nixos.org";
-        }];
-        # set to dark modew
-        "browser.theme.content-theme" = 2;
-        "browser.theme.toolbar-theme" = 2;
-      };
-    };
-  };
-
-  programs.vscode = {
-    package = pkgs.unstable.vscode;
-    enable = true;
-    keybindings = builtins.fromJSON (builtins.readFile ./keybindings.json);
-    extensions = with pkgs.unstable.vscode-extensions;
-      [
-        arrterian.nix-env-selector
-        bbenoist.nix
-        eamodio.gitlens
-        github.copilot
-        github.vscode-pull-request-github
-        kahole.magit
-        matklad.rust-analyzer
-        ms-python.vscode-pylance
-        ms-vscode-remote.remote-ssh
-        ms-vscode.cmake-tools
-        ms-vscode.cpptools
-        ms-vscode.hexeditor
-        ms-vscode.makefile-tools
-        ms-vscode.theme-tomorrowkit
-        ms-vsliveshare.vsliveshare
-        stephlin.vscode-tmux-keybinding
-        usernamehw.errorlens
-        vadimcn.vscode-lldb
-        vscodevim.vim
-        vspacecode.vspacecode
-        vspacecode.whichkey
-        WakaTime.vscode-wakatime
-        bodil.file-browser
-      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
-        name = "vscode-indent-line";
-        publisher = "sandipchitale";
-        version = "1.0.1";
-        sha256 = "Zygw5XOEEF4Fj7IZyuC+ZKCG8Yb3B0WsD+OwmDBQiMk=";
-      }];
-
-    userSettings = {
-      "whichkey.delay" = 900;
-      "workbench.quickOpen.delay" = 900;
-      "vspacecode.bindingOverrides" = [
-        {
-          "name" = "Git log";
-          "type" = "command";
-          "keys" = "g.g";
-          "command" = "magit.status";
-        }
-        {
-          "name" = "Terminal";
-          "type" = "command";
-          "keys" = "x";
-          "command" = "workbench.action.terminal.focus";
-        }
-        {
-          "name" = "Reload window";
-          "command" = "workbench.action.reloadWindow";
-          "keys" = "w.r";
-          "type" = "command";
-        }
-        {
-          "name" = "close window";
-          "type" = "command";
-          "keys" = "w.q";
-          "command" = "workbench.action.closePanel";
-        }
-        {
-          "name" = "Find files";
-          "type" = "command";
-          "keys" = "f.f";
-          "command" = "file-browser.open";
-        }
-        {
-          "name" = "Open Recent";
-          "type" = "command";
-          "keys" = " ";
-          "command" = "workbench.action.quickOpen";
-        }
-      ];
-      "editor.autoIndent" = "full";
-      "vim.easymotion" = true;
-      "vim.useSystemClipboard" = true;
-      "workbench.colorTheme" = "Default Dark+";
-      "rust-analyzer.procMacro.enable" = false;
-      "rust-analyzer.procMacro.attributes.enable" = false;
-      "editor.inlineSuggest.enabled" = true;
-      "workbench.sideBar.location" = "right";
-      "workbench.colorCustomizations" = { "statusBar.background" = "#822be0"; };
-    };
-  };
 
   programs.git = {
     enable = true;
