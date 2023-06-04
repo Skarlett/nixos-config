@@ -19,6 +19,10 @@
         keys = import ./keys.nix;
         system = "x86_64-linux";
         specialArgs = { inherit (inputs) self; inherit keys; };
+        extraSpecialArgs = {
+          inherit (inputs) self nix-doom-emacs nur;
+        };
+        getHomeManagerModule = ({config, lib, ...}: {profile ? config.networking.hostName}: {})
     in
     {
       nixosConfigurations.flagship = inputs.nixpkgs.lib.nixosSystem {
@@ -27,30 +31,15 @@
           ./modules/common.nix
           ./machines/flagship.nix
           ./machines/flagship.hardware.nix
+          ./extra-pkgs.nix
           inputs.nur.nixosModules.nur
           inputs.agenix.nixosModules.default
-          ({ lib, config, ... }: {
-            networking.hostName = "flagship";
-            nixpkgs.overlays = [
-              (final: prev: {
-                unstable = import inputs.nixpkgs-unstable {
-                  inherit system;
-                  config.allowUnfree = true;
-                };
-              })
-              inputs.nur.overlay
-              inputs.nix-alien.overlays.default
-            ];
-          })
-
           inputs.hm.nixosModules.home-manager
           {
-            home-manager.users.lunarix = import ./home.nix;
+            home-manager.users.lunarix = import ./home-manager/flagship.nix;
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = {
-              inherit (inputs) self nix-doom-emacs nur;
-            };
+            home-manager.extraSpecialArgs = extraSpecialArgs;
           }
         ];
       };
@@ -60,6 +49,7 @@
         modules = [
           ./modules/common.nix
           ./modules/accessible.nix
+          ./extra-pkgs.nix
           ({config, lib, pkgs, ...}: {
             networking.hostName = "liveiso";
             services.openssh.enable = true;
@@ -99,5 +89,18 @@
           user = "root";
         };
       };
+
+      homeConfigurations.flagship = inputs.hm.lib.homeManagerConfiguration {
+        inherit extraSpecialArgs;
+        pkgs = import inputs.nixpkgs {
+          inherit system; config.allowUnfree = true;
+        };
+
+        modules = [
+          ./extra-pkgs.nix
+          ./home-manager/flagship.nix
+        ];
+      };
+
     };
 }

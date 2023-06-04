@@ -11,4 +11,4 @@ the current systems are the following:
     - raspberry pi 3b
     - `nix build .#nixosConfigurations.coggie.config.system.build.sdImage`
     - `zstd -dc /dev/mmcblk0`
-    - `deploy-rs -s`   
+    - `deploy-rs -s`
