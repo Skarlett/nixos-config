@@ -22,7 +22,6 @@
         extraSpecialArgs = {
           inherit (inputs) self nix-doom-emacs nur;
         };
-        getHomeManagerModule = ({config, lib, ...}: {profile ? config.networking.hostName}: {})
     in
     {
       nixosConfigurations.flagship = inputs.nixpkgs.lib.nixosSystem {
@@ -95,12 +94,10 @@
         pkgs = import inputs.nixpkgs {
           inherit system; config.allowUnfree = true;
         };
-
         modules = [
           ./extra-pkgs.nix
           ./home-manager/flagship.nix
         ];
       };
-
     };
 }
