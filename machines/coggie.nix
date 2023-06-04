@@ -21,7 +21,4 @@
   ]; 
 
   documentation.man.generateCaches = lib.mkForce false;
-  environment.systemPackages = with pkgs; [
-    tor
-  ];
 }
