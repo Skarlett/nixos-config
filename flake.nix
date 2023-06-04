@@ -5,13 +5,16 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
     racoon.url = "github:nixos/nixpkgs/nixos-22.11";
     nur.url = "github:nix-community/NUR";
-    nix-doom-emacs = { url = "github:nix-community/nix-doom-emacs"; };
+    nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
+    nix-doom-emacs.inputs.nixpkgs.follows = "racoon";
+    
     nix-alien = { url = "github:thiagokokada/nix-alien"; };
     nix-ld = { url = "github:Mic92/nix-ld/main"; };
     hm = { url = "github:nix-community/home-manager/release-23.05"; };
     # serects.url = "git:secrets";
     agenix.url = "github:ryantm/agenix";
     deploy.url = "github:serokell/deploy-rs";
+    
   };
 
   outputs = inputs:
