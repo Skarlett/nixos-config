@@ -5,7 +5,7 @@
    # });
 # in
 {
-
+  networking.hostName = "flagship";
   imports = [
     self.inputs.nix-ld.nixosModules.nix-ld
   ];
@@ -17,10 +17,10 @@
     driSupport = true;
     driSupport32Bit = true;
   };
-
+  # security.pam.enableEcryptfs = mkEnableOption
+  # (lib.mdDoc "eCryptfs PAM module (mounting ecryptfs home directory on login)");
   services.clamav.daemon.enable = true;
   services.clamav.updater.enable = true;
-  security.rtkit.enable = true;
   sound.enable = true;
   hardware.pulseaudio.enable = true;
   

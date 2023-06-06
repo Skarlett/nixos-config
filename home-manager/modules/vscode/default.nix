@@ -4,7 +4,10 @@
         package = pkgs.unstable.vscode;
         enable = true;
         keybindings = builtins.fromJSON (builtins.readFile ./keybindings.json);
-        extensions = with pkgs.unstable.vscode-extensions;
+        extensions =
+        (with pkgs.vscode-marketplace;
+            with pkgs.unstable.vscode-extensions;
+            with pkgs.vscode-marketplace-release;
         [
             arrterian.nix-env-selector
             bbenoist.nix
@@ -29,7 +32,7 @@
             vspacecode.whichkey
             WakaTime.vscode-wakatime
             bodil.file-browser
-        ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
+        ]) ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
             name = "vscode-indent-line";
             publisher = "sandipchitale";
             version = "1.0.1";
@@ -86,6 +89,13 @@
             "editor.inlineSuggest.enabled" = true;
             "workbench.sideBar.location" = "right";
             "workbench.colorCustomizations" = { "statusBar.background" = "#822be0"; };
+            # Enable nix LSP.
+            "nix.enableLanguageServer" = true;
+            "nix.serverPath" = "nil";
+            # Use nixpkgs-fmt with nil
+            "nix.serverSettings" = {
+                nil.formatting.command = [ "nixpkgs-fmt" ];
+            };
         };
     };
 }

@@ -1,8 +1,8 @@
-{ self, config, lib, pkgs, nur, nix-doom-emacs, ... }: {
-  nixpkgs.overlays = [ nur.overlay ];
+{ self, inputs, config, lib, pkgs, ... }: {
+  nixpkgs.overlays = [ inputs.nur.overlay ];
   imports = with self.inputs; [ 
-    nix-doom-emacs.hmModule
-    nur.hmModules.nur
+    inputs.nix-doom-emacs.hmModule
+    inputs.nur.hmModules.nur
     ./modules/vscode
     ./modules/fish.nix
     ./modules/firefox.nix  
@@ -11,9 +11,38 @@
   programs.doom-emacs = {
     enable = true;
     doomPrivateDir = ./doom;
-    extraPackages = [ pkgs.ripgrep ];
+    emacsPackagesOverlay = final: prev: {
+      copilot = final.trivialBuild {
+        pname = "copilot.el";
+        src = pkgs.fetchFromGitHub rec {
+         owner = "zerolfx";
+         repo = "copilot.el";
+         rev = "bac943870c7489ea526abed47f0aeb8d914723c0";
+         sha256 = "pQBfMgLW6APUjdoNP+m0A0yHn2a17ef4FUowr7ibJEA=";
+         propagatedUserEnvPkgs = [
+           final.jsonrpc
+           final.s
+           final.dash
+           final.editorconfig
+         ];
+         buildInputs = propagatedUserEnvPkgs;
+         # installPhase = ''
+         #   mkdir -p $out/share/emacs/site-lisp $out/share/emacs/native-lisp
+         #   cp -r dist *.el $out/share/emacs/site-lisp
+         #   cp -r dist *.elc $out/share/emacs/native-lisp
+         # '';
+        };
+      };
+    };
+    extraConfig = ''
+      (use-package! copilot
+          :hook (prog-mode . copilot-mode)
+          :bind (:map copilot-completion-map
+                ("<tab>" . 'copilot-accept-completion)
+                ("TAB" . 'copilot-accept-completion)
+                ("C-TAB" . 'copilot-accept-completion-by-word)
+                ("C-<tab>" . 'copilot-accept-completion-by-word)))'';
   };
-
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "lunarix";
@@ -21,7 +50,6 @@
 
   home.stateVersion = "22.11";
   programs.home-manager.enable = true;
-  # programs.fish.enable = true;
 
   home.packages = with pkgs; [
     nixos-generators
@@ -46,7 +74,9 @@
     git
     pavucontrol
     steam
-    spotify
+    (raccoon.spotify.override {
+      openssl = raccoon.gnutls;
+    })
     keepassxc
     nerdfonts
     tmux
@@ -71,7 +101,6 @@
     lldb
     glfw
     clang
-    # python2
     rustfmt
     unstable.cargo
     unstable.rustc
