@@ -1,10 +1,12 @@
-{inputs, config, pkgs, ...}:
+{inputs, config, pkgs, lib, ...}:
 let cfg = {
   inherit (pkgs.stdenv.hostPlatform) system;
     config.allowUnfree = true;
   };
 in
 {
+  # add all inputs to registry
+  nix.registry = builtins.mapAttrs (k: v: { flake = v; }) inputs;
   nixpkgs.overlays = with inputs; [
     (final: prev: {
         unstable = import nixpkgs-unstable cfg;
