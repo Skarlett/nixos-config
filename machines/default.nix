@@ -10,7 +10,7 @@
       inputs.nur.nixosModules.nur
       inputs.hm.nixosModules.home-manager
       {
-        home-manager.users.lunarix = import ./home-manager/flagship.nix;
+        home-manager.users.lunarix = import ../home-manager/flagship.nix;
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
         home-manager.extraSpecialArgs = specialArgs;
