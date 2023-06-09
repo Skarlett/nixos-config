@@ -25,7 +25,7 @@
       '';
 
     dry-build = host:
-        mkWorkflow "${host}-dry-build"
+        mkWorkflow "${host}"
         "nix build .#nixosConfigurations.${host}.config.system.build.toplevel --dry-run";
 
     dry-hosts =
