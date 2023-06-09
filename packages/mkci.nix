@@ -22,7 +22,7 @@
                     github_access_token: \''${{ secrets.GITHUB_TOKEN }}
                 - run: ${cmd}
         EOF
-    '';
+      '';
 
     dry-build = host:
         mkWorkflow "${host}-dry-build"
