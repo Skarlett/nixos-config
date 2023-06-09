@@ -1,10 +1,8 @@
-{ self, config, lib, pkgs, ... }: {
+{ inputs, config, lib, pkgs, ... }: {
   time.timeZone = "America/Chicago";
   i18n.defaultLocale = "en_US.utf8";
 
   nixpkgs.config.allowUnfree = true;
-  nix.registry.nixpkgs.flake = self.inputs.nixpkgs;
-  
   environment.systemPackages = with pkgs; [
     curl
     wget
@@ -19,7 +17,7 @@
     coreutils
   ];
 
-  users.users.root = { shell = pkgs.fish; };
+  users.users.root.shell = pkgs.fish;
   users.users.lunarix = {
     shell = pkgs.fish;
     extraGroups = [ "networkmanager" "wheel" ];

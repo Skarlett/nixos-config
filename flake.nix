@@ -25,9 +25,16 @@
         common-mods = [
           ./modules/common.nix
           ./extra-pkgs.nix
-          ./modules/lightbuild.nix
         ];
-        server-mods = common-mods ++ [ ./modules/accessible.nix ];
+
+        server-mods = common-mods ++ [
+          "${inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
+          ./modules/accessible.nix
+        ];
+
+        pub-server = common-mods ++ server-mods ++ [
+          ./modules/fail2ban.nix
+        ];
     in
     {
       nixosConfigurations.flagship = inputs.nixpkgs.lib.nixosSystem {
@@ -35,6 +42,7 @@
         modules = [
           ./machines/flagship.nix
           ./machines/flagship.hardware.nix
+          ./modules/lightbuild.nix
           inputs.agenix.nixosModules.default
           inputs.nur.nixosModules.nur
           inputs.hm.nixosModules.home-manager
@@ -47,11 +55,17 @@
         ] ++ common-mods;
       };
 
+      nixosConfigurations.charmander = inputs.nixpkgs.lib.nixosSystem {
+        inherit system specialArgs;
+        modules = [
+          ./machines/charmander.nix
+          ./machines/charmander.hardware.nix
+        ] ++ server-mods;
+      };
+
       nixosConfigurations.cardinal = inputs.nixpkgs.lib.nixosSystem {
         inherit system specialArgs;
         modules = [
-          "${inputs.nixpkgs}/nixos/modules/profiles/hardened.nix"
-          "${inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
           ./machines/cardinal.nix
         ] ++ server-mods;
       };
