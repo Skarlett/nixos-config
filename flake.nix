@@ -22,19 +22,6 @@
         keys = import ./keys.nix;
         system = "x86_64-linux";
         specialArgs = { inherit inputs self keys; };
-        common-mods = [
-          ./modules/common.nix
-          ./extra-pkgs.nix
-        ];
-
-        server-mods = common-mods ++ [
-          "${inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
-          ./modules/accessible.nix
-        ];
-
-        pub-server = common-mods ++ server-mods ++ [
-          ./modules/fail2ban.nix
-        ];
     in
     {
       nixosConfigurations.flagship = inputs.nixpkgs.lib.nixosSystem {
@@ -43,6 +30,7 @@
           ./machines/flagship.nix
           ./machines/flagship.hardware.nix
           ./modules/lightbuild.nix
+          ./profiles/common.nix
           inputs.agenix.nixosModules.default
           inputs.nur.nixosModules.nur
           inputs.hm.nixosModules.home-manager
@@ -52,7 +40,7 @@
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = specialArgs;
           }
-        ] ++ common-mods;
+        ];
       };
 
       nixosConfigurations.charmander = inputs.nixpkgs.lib.nixosSystem {
@@ -60,28 +48,33 @@
         modules = [
           ./machines/charmander.nix
           ./machines/charmander.hardware.nix
-        ] ++ server-mods;
+          ./profiles/headless.nix
+        ];
       };
 
       nixosConfigurations.cardinal = inputs.nixpkgs.lib.nixosSystem {
         inherit system specialArgs;
         modules = [
           ./machines/cardinal.nix
-        ] ++ server-mods;
+          ./profiles/headless.nix
+          ./profiles/hardened.nix
+        ];
       };
 
       nixosConfigurations.whiskey = inputs.nixpkgs.lib.nixosSystem {
         inherit system specialArgs;
         modules = [
           ./machines/whiskey.nix
-        ] ++ server-mods;
+          ./profiles/headless.nix
+        ];
       };
 
       nixosConfigurations.live-iso = inputs.nixpkgs.lib.nixosSystem {
         inherit system specialArgs;
         modules = [
          ./machines/live.nix
-        ] ++ server-mods;
+         ./profiles/headless.nix
+        ];
       };
 
       nixosConfigurations.coggie = inputs.nixpkgs.lib.nixosSystem {
@@ -91,8 +84,8 @@
           "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
           ./machines/coggie.nix
           ./machines/coggie.hardware.nix
-          ./modules/git-ssh.nix
-        ] ++ server-mods;
+          # ./modules/git-ssh.nix
+        ];
       };
       # deploy-rs node configuration
       deploy.nodes.coggie = {
