@@ -29,6 +29,10 @@
         inherit inputs system specialArgs;
       };
 
+      packages.x86_64-linux.mkci = pkgs.callPackage ./packages/mkci.nix {
+        inherit self;
+      };
+
       # deploy-rs node configuration
       deploy.nodes.coggie = {
         hostname = "10.0.0.245";
