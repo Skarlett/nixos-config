@@ -18,75 +18,17 @@
   };
 
   outputs = {self, ...}@inputs:
-    let 
-        keys = import ./keys.nix;
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs self keys; };
-    in
+  let
+    keys = import ./keys.nix;
+    system = "x86_64-linux";
+    specialArgs = { inherit inputs self keys; };
+    pkgs = import inputs.nixpkgs { inherit system; };
+  in
     {
-      nixosConfigurations.flagship = inputs.nixpkgs.lib.nixosSystem {
-        inherit system specialArgs;
-        modules = [
-          ./machines/flagship.nix
-          ./machines/flagship.hardware.nix
-          ./modules/lightbuild.nix
-          ./profiles/common.nix
-          inputs.agenix.nixosModules.default
-          inputs.nur.nixosModules.nur
-          inputs.hm.nixosModules.home-manager
-          {
-            home-manager.users.lunarix = import ./home-manager/flagship.nix;
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = specialArgs;
-          }
-        ];
+      nixosConfigurations = pkgs.callPackage ./machines {
+        inherit inputs system specialArgs;
       };
 
-      nixosConfigurations.charmander = inputs.nixpkgs.lib.nixosSystem {
-        inherit system specialArgs;
-        modules = [
-          ./machines/charmander.nix
-          ./machines/charmander.hardware.nix
-          ./profiles/headless.nix
-        ];
-      };
-
-      nixosConfigurations.cardinal = inputs.nixpkgs.lib.nixosSystem {
-        inherit system specialArgs;
-        modules = [
-          ./machines/cardinal.nix
-          ./profiles/headless.nix
-          ./profiles/hardened.nix
-        ];
-      };
-
-      nixosConfigurations.whiskey = inputs.nixpkgs.lib.nixosSystem {
-        inherit system specialArgs;
-        modules = [
-          ./machines/whiskey.nix
-          ./profiles/headless.nix
-        ];
-      };
-
-      nixosConfigurations.live-iso = inputs.nixpkgs.lib.nixosSystem {
-        inherit system specialArgs;
-        modules = [
-         ./machines/live.nix
-         ./profiles/headless.nix
-        ];
-      };
-
-      nixosConfigurations.coggie = inputs.nixpkgs.lib.nixosSystem {
-        inherit specialArgs;
-        system = "aarch64-linux";
-        modules = [
-          "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-          ./machines/coggie.nix
-          ./machines/coggie.hardware.nix
-          # ./modules/git-ssh.nix
-        ];
-      };
       # deploy-rs node configuration
       deploy.nodes.coggie = {
         hostname = "10.0.0.245";
