@@ -12,7 +12,7 @@
         pull_request:
             branches: [ "master" ]
         jobs:
-        flagship:
+          flagship:
             runs-on: ubuntu-latest
             steps:
             - uses: actions/checkout@v3
