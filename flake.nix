@@ -15,7 +15,7 @@
     vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
     coggiebot.url = "github:skarlett/coggie-bot";
     coggiebot.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    utils.url = github:numtide/flake-utils;
+    utils.url = "github:numtide/flake-utils";
   };
 
   outputs = {self, ...}@inputs:
@@ -26,7 +26,8 @@
     pkgs = import inputs.nixpkgs { inherit system; };
   in
     {
-      inherit (import ./packages { inherit self inputs; }) packages;
+      inherit (import ./packages { inherit self inputs; lib=pkgs.lib;}) packages;
+
       nixosConfigurations = pkgs.callPackage ./machines {
         inherit inputs system specialArgs;
       };

@@ -1,5 +1,5 @@
 { self, inputs }:
-  inputs.utils.lib.eachDefaultSystem (system:
+  inputs.utils.eachDefaultSystem (system:
   let
     pkgs = import inputs.nixpkgs { inherit system; };
   in
