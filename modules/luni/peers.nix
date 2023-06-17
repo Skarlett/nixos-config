@@ -14,13 +14,13 @@ let
       };
 
       charmander = {
-        publicKey = keys.cardinal.wireguard.pub;
+        publicKey = keys.cardinal.wireguard;
         allowedIPs = ["::/0"];
         endpoint = "10.0.0.2:51820";
       };
 
       cardinal = {
-        publicKey = keys.cardinal.wireguard.pub;
+        publicKey = keys.cardinal.wireguard;
         allowedIPs = ["::/0"];
         endpoint = "unallocatedspace.dev:51820";
       };
