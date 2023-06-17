@@ -33,7 +33,6 @@ in
     };
 
     peers = mkOption {
-      type = types.list;
       default = netmap.gateways;
     };
 
