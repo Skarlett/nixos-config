@@ -24,7 +24,7 @@ in
 
     netmask = mkOption {
       default = "48";
-    }
+    };
 
     ips = mkOption {
       type = types.listOf types.string;
