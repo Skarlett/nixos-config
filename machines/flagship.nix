@@ -7,9 +7,9 @@
 {
   networking.hostName = "flagship";
 
-  networking.luni.enable = true;
-  networking.luni.privateKeyFile = "/etc/nixos/keys/wireguard/lunarix.pem";
-  networking.luni.suffix = "::ffff";
+  networking.luninet.enable = true;
+  networking.luninet.privateKeyFile = "/etc/nixos/keys/wireguard/lunarix.pem";
+  networking.luninet.suffix = "::ffff";
 
   imports = [
     self.inputs.nix-ld.nixosModules.nix-ld
