@@ -50,6 +50,6 @@ let
   ];
 in
 {
-    inherit peers gateways;
+    inherit peers gateways users;
     all = (lib.flatten (builtins.attrValues peers));
 }
