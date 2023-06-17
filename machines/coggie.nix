@@ -1,6 +1,6 @@
 { keys, pkgs, config, lib, ... }: 
 {
-  boot.kernelPackages = pkgs.linux_rpi3;
+  boot.kernelPackages = pkgs.linuxPackages_rpi3;
 
   system.stateVersion = "22.11";
   boot.loader.grub.enable = false;
