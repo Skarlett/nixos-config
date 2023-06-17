@@ -37,7 +37,7 @@ in
     };
 
     peers = mkOption {
-      default = netmap.gateways;
+      default = netmap.gateways ++ netmap.users;
     };
 
     device = mkOption {

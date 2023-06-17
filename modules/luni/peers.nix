@@ -13,11 +13,11 @@ let
         allowedIPs = [ "fd01:1:1:a1:1::2/64" ];
       };
 
-      charmander = {
-        publicKey = keys.cardinal.wireguard;
-        allowedIPs = ["::/0"];
-        endpoint = "10.0.0.2:51820";
-      };
+      # charmander = {
+      #   publicKey = keys.cardinal.wireguard;
+      #   allowedIPs = ["::/0"];
+      #   endpoint = "10.0.0.2:51820";
+      # };
 
       cardinal = {
         publicKey = keys.cardinal.wireguard;
@@ -41,7 +41,12 @@ let
 
   gateways = with peers; [
     lunarix.cardinal
-    lunarix.charmander
+    # lunarix.charmander
+  ];
+
+  users = with peers; [
+    lunarix.desktop
+
   ];
 in
 {
