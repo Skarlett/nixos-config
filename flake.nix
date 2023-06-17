@@ -24,11 +24,13 @@
   let
     keys = import ./keys.nix;
     system = "x86_64-linux";
-    specialArgs = { inherit inputs self keys; };
+    peers = pkgs.callPackage ./peers.nix { inherit keys; };
+    specialArgs = { inherit inputs self keys peers; };
     pkgs = import inputs.nixpkgs { inherit system; };
   in
     {
       inherit (import ./packages { inherit self inputs; lib=pkgs.lib;}) packages;
+      inherit peers;
 
       nixosConfigurations = pkgs.callPackage ./machines {
         inherit inputs system specialArgs;

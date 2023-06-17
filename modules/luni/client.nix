@@ -1,7 +1,6 @@
-{ config, lib, pkgs, keys, ... }:
+{ config, lib, pkgs, ... }:
 with lib;
 let
-  netmap = pkgs.callPackage ./peers.nix { inherit keys; };
   cfg = config.networking.luninet;
 in
 {
@@ -33,7 +32,7 @@ in
     };
 
     peers = mkOption {
-      default = netmap.gateways;
+      default = [];
     };
 
     device = mkOption {

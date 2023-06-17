@@ -8,10 +8,10 @@ let
         allowedIPs = [ "fd01:1:a1:1::1/64" ];
       };
 
-      coggie = {
-        publicKey = keys.coggie.wireguard;
-        allowedIPs = [ "fd01:1:1:a1:1::2/64" ];
-      };
+      # coggie = {
+      #   publicKey = keys.coggie.wireguard;
+      #   allowedIPs = [ "fd01:1:1:a1:1::2/64" ];
+      # };
 
       # charmander = {
       #   publicKey = keys.cardinal.wireguard;
@@ -27,16 +27,16 @@ let
     };
 
     # jeff
-    jeff.gateway = {
-      publicKey = keys.coggie.wireguard;
-      allowedIPs = [ "fd01:1:1:a1:420::1/64" ];
-    };
+    # jeff.gateway = {
+    #   publicKey = keys.coggie.wireguard;
+    #   allowedIPs = [ "fd01:1:1:a1:420::1/64" ];
+    # };
 
-    # dan
-    dan.gateway = {
-      publicKey = keys.coggie.wireguard;
-      allowedIPs = [ "fd01:1:1:a1:ffe::1/64" ];
-    };
+    # # dan
+    # dan.gateway = {
+    #   publicKey = keys.coggie.wireguard;
+    #   allowedIPs = [ "fd01:1:1:a1:ffe::1/64" ];
+    # };
   };
 
   gateways = with peers; [
@@ -51,5 +51,4 @@ let
 in
 {
     inherit peers gateways users;
-    all = (lib.flatten (builtins.attrValues peers));
 }

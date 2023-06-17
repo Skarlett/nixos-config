@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{config, lib, pkgs, peers, ...}:
 let
   unalloc-root = "/srv/www/vhosts/unallocatedspace.dev";
   webroot = "/srv/www";
@@ -14,7 +14,9 @@ in
 
   networking.lunihost.enable = true;
   networking.lunihost.suffix = "::ff00";
+  networking.lunihost.peers = peers.users ++ peers.gateways;
   networking.hostName = "unallocatedspace";
+
   # networking.nat.externalInterface = "eth0";
   # networking.luninet.enable = true;
   # networking.luninet.subnet = ":ffff";

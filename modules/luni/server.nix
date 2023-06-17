@@ -1,7 +1,6 @@
-{config, pkgs, lib, keys, ... }:
+{config, pkgs, lib, ... }:
 with lib;
 let
-  netmap = pkgs.callPackage ./peers.nix { inherit keys; };
   cfg = config.networking.lunihost;
 in
 {
@@ -37,7 +36,7 @@ in
     };
 
     peers = mkOption {
-      default = netmap.gateways ++ netmap.users;
+      default = [];
     };
 
     device = mkOption {
@@ -61,9 +60,6 @@ in
     # fd01:8cae:d246:5f03:XXXX:XXXX:XXXX:XXXX
     #  16    32   48   64   80   96  112  128
     networking.wireguard.interfaces.${cfg.device} =
-      let
-        peers = (import ./peers.nix { inherit keys lib; });
-      in
       {
         peers = cfg.peers;
         ips = cfg.ips;

@@ -1,4 +1,4 @@
-{ self, config, pkgs, lib, ... }:
+{ self, config, pkgs, lib, peers, ... }:
 # let
    # dark_ghidra = pkgs.ghidra.overrideAttrs (old: {
    #   patches = (old.patches or []) ++ [];
@@ -10,7 +10,7 @@
   networking.luninet.enable = true;
   networking.luninet.privateKeyFile = "/etc/nixos/keys/wireguard/lunarix.pem";
   networking.luninet.suffix = "::1";
-
+  networking.lunihost.peers = peers.gateways;
   imports = [
     self.inputs.nix-ld.nixosModules.nix-ld
   ];
