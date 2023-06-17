@@ -22,9 +22,13 @@ in
       type = types.string;
     };
 
+    netmask = mkOption {
+      default = "48";
+    }
+
     ips = mkOption {
       type = types.listOf types.string;
-      default = [ "${cfg.network}${cfg.subnet}${cfg.suffix}" ];
+      default = [ "${cfg.network}${cfg.subnet}${cfg.suffix}/${cfg.netmask}" ];
     };
 
     privateKeyFile = mkOption {
