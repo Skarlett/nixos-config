@@ -23,7 +23,7 @@ in
     };
 
     address = mkOption {
-      type = types.listOf types.submodule services.wireguard;
+      type = types.listOf types.string;
       default = [ "${cfg.network}${cfg.subnet}${cfg.suffix}" ];
     };
 
