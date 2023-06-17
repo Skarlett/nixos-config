@@ -2,7 +2,7 @@
 with lib;
 let
   netmap = pkgs.callPackage ./peers.nix { inherit keys; };
-  cfg = config.networking.lunie-net;
+  cfg = config.networking.luninet;
 in
 {
   options.networking.luninet = {

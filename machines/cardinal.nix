@@ -13,17 +13,6 @@ in
   };
 
   networking.hostName = "unallocatedspace";
-
-  swapDevices = [{
-    device = "/dev/vda2";
-  }];
-
-  fileSystems = {
-    "/" = {
-      device = "/dev/vda1";
-    };
-  };
-
   # networking.nat.externalInterface = "eth0";
   # networking.luninet.enable = true;
   # networking.luninet.subnet = ":ffff";

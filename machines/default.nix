@@ -26,7 +26,7 @@
         ./charmander.nix
         ./charmander.hardware.nix
         ../profiles/headless.nix
-        ../modules/lunanet/server.nix
+        ../modules/luni/server.nix
       ];
   };
 
@@ -61,7 +61,7 @@
       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
       ./coggie.nix
       ./coggie.hardware.nix
-      ../modules/lunanet/server.nix
+      ../modules/luni/server.nix
       # ./modules/git-ssh.nix
     ];
   };
