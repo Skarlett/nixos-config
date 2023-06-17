@@ -40,6 +40,10 @@ in
       type = types.string;
       default = "luni";
     };
+
+    port = mkOption {
+      default = 51820;
+    };
   };
 
   config = mkIf cfg.enable {

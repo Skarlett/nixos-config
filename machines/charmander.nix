@@ -3,6 +3,8 @@
   boot.kernelPackages = pkgs.linuxPackages_4_19;
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sde";
+  networking.lunihost.enable = true;
+  networking.lunihost.suffix = ":ff01";
 
   services.hydra = {
     enable = true;

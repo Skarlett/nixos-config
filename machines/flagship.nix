@@ -9,7 +9,7 @@
 
   networking.luninet.enable = true;
   networking.luninet.privateKeyFile = "/etc/nixos/keys/wireguard/lunarix.pem";
-  networking.luninet.suffix = "::ffff";
+  networking.luninet.suffix = "::1";
 
   imports = [
     self.inputs.nix-ld.nixosModules.nix-ld

@@ -12,6 +12,8 @@ in
     enableCryptodisk = true;
   };
 
+  networking.lunihost.enable = true;
+  networking.lunihost.suffix = ":ff00";
   networking.hostName = "unallocatedspace";
   # networking.nat.externalInterface = "eth0";
   # networking.luninet.enable = true;
