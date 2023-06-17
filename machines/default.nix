@@ -5,7 +5,7 @@
       ./flagship.nix
       ./flagship.hardware.nix
       ../modules/lightbuild.nix
-      # ../modules/lunanet/client.nix
+      ../modules/luni/client.nix
       ../profiles/common.nix
       inputs.agenix.nixosModules.default
       inputs.nur.nixosModules.nur
