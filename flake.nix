@@ -34,6 +34,11 @@
         inherit inputs system specialArgs;
       };
 
+      nixosModules = {
+        luninet = import ./modules/luni/client.nix;
+        luni-server = import ./modules/luni/server.nix;
+      };
+
       # deploy-rs node configuration
       deploy.nodes.coggie = {
         hostname = "10.0.0.245";
