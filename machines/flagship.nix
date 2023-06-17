@@ -6,13 +6,18 @@
 # in
 {
   networking.hostName = "flagship";
+
+  networking.luni.enable = true;
+  networking.luni.privateKeyFile = "/etc/nixos/keys/wireguard/lunarix.pem";
+  networking.luni.suffix = "::ffff";
+
   imports = [
     self.inputs.nix-ld.nixosModules.nix-ld
   ];
 
   nix.settings.trusted-users = [ "lunarix" ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
-  
+
   hardware.opengl = {
     driSupport = true;
     driSupport32Bit = true;
@@ -47,6 +52,7 @@
     desktopManager.cinnamon.enable = true;
     videoDrivers = [ "nvidia" ];
   };
+
   nixpkgs.config.permittedInsecurePackages = [
     "openssl-1.1.1u" # steam
   ];

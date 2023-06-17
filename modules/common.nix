@@ -2,6 +2,10 @@
   time.timeZone = "America/Chicago";
   i18n.defaultLocale = "en_US.utf8";
 
+  networking.firewall.enable = true;
+  # networking.firewall.interfaces.eth0.allowedTCPPorts
+  # networking.firewall.interfaces.eth0.allowedTCPPorts
+
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
     curl

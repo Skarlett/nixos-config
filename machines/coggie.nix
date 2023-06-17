@@ -1,8 +1,11 @@
 { keys, pkgs, config, lib, ... }: 
 {
+  boot.kernelPackage = pkgs.linux_rpi3;
+
   system.stateVersion = "22.11";
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
+
   services.journald.extraConfig = ''
     Storage=volatile
   '';
