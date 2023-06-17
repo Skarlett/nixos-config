@@ -15,7 +15,7 @@ in
 
     subnet = mkOption {
       type = types.string;
-      default = ":1";
+      default = "";
     };
 
     suffix = mkOption {
