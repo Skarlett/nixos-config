@@ -35,6 +35,7 @@
     modules =
       [
         ./cardinal.nix
+        ./cardinal.hardware.nix
         ../modules/luni/server.nix
         # ../modules/unallocatedspace.dev
         ../profiles/headless.nix
