@@ -75,6 +75,7 @@
     self.inputs.deploy.packages."x86_64-linux".default
   ];
 
+  services.arl-scrape.enable = true;
   services.printing.enable = true;
   services.openssh.enable = true;
   networking.firewall = {

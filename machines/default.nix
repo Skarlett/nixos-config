@@ -6,6 +6,7 @@
       ./flagship.hardware.nix
       ../modules/lightbuild.nix
       ../modules/luni/client.nix
+      ../modules/arl-scrape.nix
       ../profiles/common.nix
       inputs.agenix.nixosModules.default
       inputs.nur.nixosModules.nur

@@ -40,6 +40,7 @@
       nixosModules = {
         luninet = import ./modules/luni/client.nix;
         luni-server = import ./modules/luni/server.nix;
+        arl-scrape = import ./modules/arl-scrape.nix;
       };
 
       # deploy-rs node configuration
