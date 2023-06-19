@@ -1,3 +1,4 @@
+
 {
   description = "NixOS configuration";
   inputs = {
@@ -42,16 +43,31 @@
       };
 
       # deploy-rs node configuration
-      deploy.nodes.coggie = {
-        hostname = "10.0.0.245";
-        profiles.system = {
-          sshUser = "lunarix";
-          sshOpts = [ "-t" ];
-          magicRollback = false;
-          path =
-            inputs.deploy.lib.aarch64-linux.activate.nixos
-              inputs.self.nixosConfigurations.coggie;
-          user = "root";
+      deploy.nodes = {
+        coggie = {
+          hostname = "10.0.0.245";
+          profiles.system = {
+            user = "root";
+            sshUser = "lunarix";
+            sshOpts = [ "-t" ];
+            magicRollback = false;
+            path =
+              inputs.deploy.lib.aarch64-linux.activate.nixos
+                inputs.self.nixosConfigurations.coggie;
+          };
+        };
+
+        cardinal = {
+          hostname = "unallocatedspace.dev";
+          profiles.system = {
+            user = "root";
+            sshUser = "lunarix";
+            sshOpts = [ "-t" ];
+            magicRollback = false;
+            path =
+              inputs.deploy.lib.x86_64-linux.activate.nixos
+                inputs.self.nixosConfigurations.cardinal;
+          };
         };
       };
 

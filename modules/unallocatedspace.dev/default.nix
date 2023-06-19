@@ -7,19 +7,21 @@ let
   };
 in
 {
-  security.acme.acceptTerms = true;
-  security.acme.defaults.email = "360d@pm.me";
-  security.acme.defaults.group = "acme";
-  security.acme.certs."${FQDN}" = {
-    group = "acme";
-    directory = "/var/lib/acme/unallocatedspace.dev/";
-    reloadServices = ["lighttpd.service"];
-  };
+  networking.firewall.allowedTCPPorts = [ 80 443 4443 ];
+  # security.acme.acceptTerms = true;
+  # security.acme.defaults.email = "360d@pm.me";
+  # security.acme.defaults.group = "acme";
+  # security.acme.certs."${FQDN}" = {
+  #   group = "acme";
+  #   webroot = "/var/lib/acme/unallocatedspace.dev/"
+  #   reloadServices = ["lighttpd.service"];
+  #   listenHTTP = ":4443";
+  # };
 
-  users.users.lighttp.extraGroups = ["acme"];
+  users.groups.www = {};
+  environment.systemPackages = [frontend];
   services.lighttpd = {
     enable = true;
-    document-root = "${frontend}/dist";
     enableModules = [
       "mod_status"
       "mod_openssl"
@@ -27,26 +29,23 @@ in
 
     extraConfig =
       let
-         acme-dir = "${config.security.acme."${FQDN}".directory}";
+         acme-dir =""; #"${config.security.acme.certs."${FQDN}".directory}";
          acme-conf = ''
-           ssl.privkey = "${acme-dir}/privkey.pem"
-           ssl.pemfile = "${acme-dir}/fullchain.pem"
+           #ssl.privkey = "${acme-dir}/key.pem"
+           #ssl.pemfile = "${acme-dir}/fullchain.pem"
           '';
       in
       ''
-        server.username  = "lighttpd"
-        server.groupname = "lighttpd"
-
         $SERVER["socket"] == ":443" {
-          ${acme-conf}
-          ssl.engine = "enable"
-          ssl.openssl.ssl-conf-cmd = ("Protocol" => "-ALL, TLSv1.2, TLSv1.3")
+          #''${acme-conf}
+          #ssl.engine = "enable"
+          #ssl.openssl.ssl-conf-cmd = ("Protocol" => "-ALL, TLSv1.2, TLSv1.3")
           server.name = "${FQDN}"
         }
 
-        $HTTP["host"] == "${FQDN}"
-          ${acme-conf}
-          server.document-root = "${frontend}"
+        $HTTP["host"] == "${FQDN}" {
+          #''${acme-conf}
+          server.document-root = "${frontend}/dist"
         }
 
         $HTTP["url"] =~ "/\.well-known/acme-challenge" {

@@ -32,14 +32,14 @@
 
   cardinal = inputs.nixpkgs.lib.nixosSystem {
     inherit system specialArgs;
-    modules =
-      [
+    modules = [
         ./cardinal.nix
         ./cardinal.hardware.nix
         ../modules/luni/server.nix
-        # ../modules/unallocatedspace.dev
+        ../modules/unallocatedspace.dev
         ../profiles/headless.nix
         ../profiles/hardened.nix
+        inputs.coggiebot.nixosModules.coggiebot
       ];
   };
 
