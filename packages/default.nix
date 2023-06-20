@@ -13,4 +13,9 @@ in
     packages.mkci = pkgs.callPackage ./mkci.nix {
         inherit self;
     };
+
+    packages.unallocatedspace-frontend = pkgs.callPackage ./unallocatedspace.dev {
+      FQDN = "unallocatedspace.dev";
+      REDIRECT="https://github.com/skarlett";
+    };
   })
