@@ -1,24 +1,13 @@
-{ config, lib, pkgs, ... }:
+{ self, config, lib, pkgs, ... }:
 let
   FQDN = "unallocatedspace.dev";
-  frontend = pkgs.callPackage ./frontend {
-    inherit FQDN;
-  };
+  frontend = self.packages.${pkgs.system}.unallocatedspace-frontend;
 in
 {
   networking.firewall.allowedTCPPorts = [ 80 443 ];
-  # security.acme.acceptTerms = true;
-  # security.acme.defaults.email = "360d@pm.me";
-  # security.acme.defaults.group = "acme";
-  # security.acme.certs."${FQDN}" = {
-  #   group = "acme";
-  #   webroot = "/var/lib/acme/unallocatedspace.dev/";
-  #   reloadServices = ["lighttpd.service"];
-  #   listenHTTP = "0.0.0.0:4443";
-  # };
 
   users.groups.www = {};
-  environment.systemPackages = [frontend];
+  environment.systemPackages = [];
   users.users.lighttpd.extraGroups = ["acme"];
   services.lighttpd = {
     enable = true;
