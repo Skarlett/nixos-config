@@ -1,8 +1,4 @@
 {config, lib, pkgs, peers, ...}:
-let
-  unalloc-root = "/srv/www/vhosts/unallocatedspace.dev";
-  webroot = "/srv/www";
-in
 {
   boot.kernelPackages = pkgs.linuxPackages_5_10_hardened;
   boot.loader.grub = {
@@ -13,6 +9,7 @@ in
   };
 
   networking.hostName = "unallocatedspace";
+  services.openssh.settings.PasswordAuthentication = false;
 
   networking.lunihost.enable = true;
   networking.lunihost.suffix = "::ff00";

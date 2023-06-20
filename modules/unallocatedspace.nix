@@ -1,7 +1,7 @@
 { self, config, lib, pkgs, ... }:
 let
-  FQDN = "unallocatedspace.dev";
   frontend = self.packages.${pkgs.system}.unallocatedspace-frontend;
+  FQDN = frontend.passthru.FQDN;
 in
 {
   networking.firewall.allowedTCPPorts = [ 80 443 ];
@@ -35,7 +35,7 @@ in
 
         $HTTP["host"] == "${FQDN}" {
           ${acme-conf}
-          server.document-root = "${frontend}/dist"
+          server.document-root = "${frontend}"
         }
 
         $HTTP["url"] =~ "/\.well-known/acme-challenge" {
