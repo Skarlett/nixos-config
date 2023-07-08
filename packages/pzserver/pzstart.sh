@@ -1,7 +1,6 @@
 PZDIR=${PZDIR:-"/var/lib/project-zomboid"}
-PZUPDATE=${STEAMCMD:-"$PZDIR/pzupdate.txt"}
 PZCONFIG=${PZCONFIG:-"$PZDIR/Server"}
-PZINI=${PZINI:-"$PZDIR/servertest.ini"}
+PZUPDATE=${STEAMCMD:-"$PZDIR/pzupdate.txt"}
 
 if [ ! -f $PZUPDATE ]; then
     echo "No update script found at $PZUPDATE"
@@ -10,7 +9,6 @@ fi
 
 # pz-workshops --print-missing $PZINI || exit 1
 # run update script first
-
 steamcmd +runscript $PZUPDATE
 cp -f $PZDEPLOY_CONFIG/* $PZDIR/Server
 

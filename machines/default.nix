@@ -73,7 +73,6 @@ in
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
       ./coggie.nix
       ./coggie.hardware.nix
-      ./modules/git-ssh.nix
       { environment.systemPackages = with pkgs; [
           gnufdisk
           util-linux
