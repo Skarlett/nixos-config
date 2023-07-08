@@ -1,5 +1,6 @@
 { keys, pkgs, config, lib, ... }: 
 {
+  common.enable = true;
   # boot.kernelPackages = pkgs.linuxPackages_rpi3;
   services.lvm.enable = false;
   system.stateVersion = "22.05";

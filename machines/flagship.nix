@@ -5,6 +5,7 @@
    # });
 # in
 {
+  common.enable = true;
   networking.hostName = "flagship";
 
   nixpkgs.overlays = with inputs.chaotic; [

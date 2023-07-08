@@ -6,6 +6,7 @@
   networking.lunihost.enable = true;
   networking.lunihost.suffix = ":ff01";
 
+  common.enable = true;
   services.hydra = {
     enable = true;
     hydraURL = "http://localhost:3000";

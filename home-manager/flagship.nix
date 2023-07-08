@@ -64,7 +64,7 @@
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
   home.username = "lunarix";
-  home.homeDirectory = "/home/lunarix";
+  home.homeDirectory = lib.mkForce "/home/lunarix";
 
   home.stateVersion = "22.11";
   programs.home-manager.enable = true;

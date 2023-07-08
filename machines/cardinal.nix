@@ -1,5 +1,6 @@
 {config, lib, pkgs, peers, ...}:
 {
+  common.enable = true;
   boot.kernelPackages = pkgs.linuxPackages_5_10_hardened;
   boot.loader.grub = {
     enable = true;
@@ -13,6 +14,7 @@
   networking.lunihost.enable = true;
   networking.lunihost.suffix = "::ff00";
   networking.lunihost.peers = peers.users ++ peers.gateways;
+
   services.coggiebot.enable = true;
   services.coggiebot.environmentFile = "/var/lib/coggiebot/env.sh";
 
