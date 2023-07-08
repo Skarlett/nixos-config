@@ -1,12 +1,13 @@
 { config, lib, pkgs, inputs, system, specialArgs, ... }:
 
 let
-  modules = [
-      ../profiles/common.nix
+  mods = [
+      ../extra-pkgs.nix
+      ../modules/common.nix
       ../modules/luni/client.nix
+      ../modules/luni/server.nix
       ../modules/arl-scrape.nix
       ../modules/unallocatedspace.nix
-      ../modules/luni/server.nix
 
       inputs.coggiebot.nixosModules.coggiebot
       inputs.chaotic.nixosModules.default
@@ -14,10 +15,7 @@ let
       inputs.nur.nixosModules.nur
       inputs.hm.nixosModules.home-manager
   ];
-
 in
-
-
 {
   flagship = inputs.nixpkgs.lib.nixosSystem {
     inherit system specialArgs;
@@ -31,7 +29,7 @@ in
         home-manager.useUserPackages = true;
         home-manager.extraSpecialArgs = specialArgs;
       }
-    ];
+    ] ++ mods;
   };
 
   charmander = inputs.nixpkgs.lib.nixosSystem {
@@ -40,9 +38,9 @@ in
       [
         ./charmander.nix
         ./charmander.hardware.nix
-        ../profiles/headless.nix
-        ../modules/luni/server.nix
-      ];
+        "${inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
+        ../modules/accessible.nix
+      ] ++ mods;
   };
 
   cardinal = inputs.nixpkgs.lib.nixosSystem {
@@ -50,10 +48,7 @@ in
     modules = [
         ./cardinal.nix
         ./cardinal.hardware.nix
-        ../modules/luni/server.nix
-        ../profiles/headless.nix
-        ../profiles/hardened.nix
-      ];
+      ] ++ mods;
   };
 
   # whiskey = inputs.nixpkgs.lib.nixosSystem {
@@ -64,7 +59,10 @@ in
   live-iso = inputs.nixpkgs.lib.nixosSystem {
     inherit system specialArgs;
     check = false;
-    modules = [ ./live.nix ../profiles/installer.nix ];
+    modules = [
+      ./live.nix
+      "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+    ] ++ mods;
   };
 
   coggie = inputs.nixpkgs.lib.nixosSystem {
@@ -72,9 +70,17 @@ in
     system = "aarch64-linux";
     modules = [
       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
+      "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
       ./coggie.nix
       ./coggie.hardware.nix
       ./modules/git-ssh.nix
-    ];
+      { environment.systemPackages = with pkgs; [
+          gnufdisk
+          util-linux
+          parted
+          nfs-utils
+        ];
+      }
+    ] ++ mods;
   };
 }

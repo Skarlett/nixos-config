@@ -5,12 +5,16 @@
    # });
 # in
 {
+  imports = [
+    self.inputs.nix-ld.nixosModules.nix-ld
+  ];
+
+  # nixpkgs.overlays = with inputs.chaotic; [
+  #   inputs.chaotic.overlays.default
+  # ];
+
   common.enable = true;
   networking.hostName = "flagship";
-
-  nixpkgs.overlays = with inputs.chaotic; [
-    inputs.chaotic.overlays.default
-  ];
 
   # Enable cap_sys_resource for noisetorch.
   security.wrappers.noisetorch = {
@@ -28,10 +32,6 @@
   networking.luninet.privateKeyFile = "/etc/nixos/keys/wireguard/lunarix.pem";
   networking.luninet.suffix = "::1";
   networking.luninet.peers = peers.gateways;
-
-  imports = [
-    self.inputs.nix-ld.nixosModules.nix-ld
-  ];
 
   nix.settings.trusted-users = [ "lunarix" ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
