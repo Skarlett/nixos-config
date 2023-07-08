@@ -1,16 +1,21 @@
-name: "Nix check"
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+VERSION: 5
+env: {}
 jobs:
   live-iso:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: cachix/install-nix-action@v20
-      with:
-        nix_path: nixpkgs=channel:nixos-unstable
-        github_access_token: ${{ secrets.GITHUB_TOKEN }}
-    - run: nix build .#nixosConfigurations.live-iso.config.system.build.toplevel --dry-run
+      - uses: actions/checkout@v3
+      - uses: actions/install-nix-action@v20
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          nix_path: nixpkgs=channel:nixos-unstable
+      - run: nix build .#nixosConfigurations.live-iso.config.system.build.toplevel
+          --dry-run
+name: live-iso
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master

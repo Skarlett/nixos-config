@@ -1,19 +1,18 @@
-{ lib, self, inputs }:
-let
-  withSystem = f:
-    lib.foldAttrs lib.mergeAttrs {}
-      (map (s: lib.mapAttrs (_: v: {${s} = v;}) (f s))
-        ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"]);
-in
-withSystem (system:
+{ self, self-lib, lib, inputs }:
+self-lib.withSystem (system:
   let
+    inherit (self-lib) workflow;
     pkgs = import inputs.nixpkgs { inherit system; };
-    recursiveMerge = attrs: (with pkgs; lib.fold lib.recursiveUpdate {} attrs);
   in
-  (recursiveMerge [
+  (self-lib.recursiveMerge [
     {
+
       packages.mkci = pkgs.callPackage ./mkci.nix {
-          inherit self;
+          inherit self self-lib;
+
+          override-workflow = [
+            (workflow.mkNixBuildUnfree { name = "pzstart"; })
+          ];
       };
 
       packages.unallocatedspace-frontend = pkgs.callPackage ./unallocatedspace.dev {
@@ -21,6 +20,7 @@ withSystem (system:
         REDIRECT="https://github.com/skarlett";
       };
     }
+
     { packages = builtins.removeAttrs (pkgs.callPackage ./pzserver {})
       ["override" "overrideDerivation"];
     }

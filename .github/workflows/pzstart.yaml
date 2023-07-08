@@ -1,7 +1,7 @@
 VERSION: 5
 env: {}
 jobs:
-  flagship:
+  pzstart:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -9,9 +9,8 @@ jobs:
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
           nix_path: nixpkgs=channel:nixos-unstable
-      - run: nix build .#nixosConfigurations.flagship.config.system.build.toplevel
-          --dry-run
-name: flagship
+      - run: nix build .#pzstart
+name: pzstart
 on:
   pull_request:
     branches:

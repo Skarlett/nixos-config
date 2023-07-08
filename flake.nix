@@ -1,5 +1,4 @@
-
-{
+rec {
   description = "NixOS configuration";
   inputs = {
     nixos-generators.url = "github:nix-community/nixos-generators";
@@ -23,16 +22,28 @@
     emacs-overlay.url = "github:nix-community/emacs-overlay";
   };
 
+
   outputs = {self, ...}@inputs:
   let
-    keys = import ./keys.nix;
     system = "x86_64-linux";
+    keys = import ./keys.nix;
     peers = pkgs.callPackage ./peers.nix { inherit keys; };
     specialArgs = { inherit inputs self keys peers; };
     pkgs = import inputs.nixpkgs { inherit system; };
+
+    self-lib = with pkgs; {
+      recursiveMerge = attrs: (lib.fold lib.recursiveUpdate {} attrs);
+
+      withSystem = f:
+        lib.foldAttrs lib.mergeAttrs {}
+          (map (s: lib.mapAttrs (_: v: {${s} = v;}) (f s))
+            ["x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin"]);
+
+      workflow = callPackage ./lib/workflow {};
+    };
   in
     {
-      inherit (import ./packages { inherit self inputs; lib=pkgs.lib;}) packages;
+      inherit (import ./packages { inherit self-lib self inputs; lib=pkgs.lib;}) packages;
       inherit peers;
 
       nixosConfigurations = pkgs.callPackage ./machines {

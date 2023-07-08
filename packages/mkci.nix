@@ -1,48 +1,43 @@
-{ self, pkgs, stdenv, lib, ... }:
+
+{ self
+  , self-lib
+  , stdenv
+  , lib
+  , yq
+  , override-workflow ? []
+  , pkg-fn ? self-lib.workflow.mkNixBuild
+  , host-fn ? self-lib.workflow.mkNixosBuild
+}:
   let
+    inherit (self-lib) recursiveMerge;
+
     names = xs: builtins.attrNames (builtins.removeAttrs xs ["override" "overrideDerivation"]);
 
-    mkWorkflow = name: cmd:
-      ''
-        cat >> $out/${name}.yaml <<EOF
-        name: "Nix check"
-        on:
-          push:
-            branches: [ "master" ]
-          pull_request:
-            branches: [ "master" ]
-        jobs:
-          ${name}:
-            runs-on: ubuntu-latest
-            steps:
-            - uses: actions/checkout@v3
-            - uses: cachix/install-nix-action@v20
-              with:
-                nix_path: nixpkgs=channel:nixos-unstable
-                github_access_token: \''${{ secrets.GITHUB_TOKEN }}
-            - run: ${cmd}
-        EOF
-      '';
-
-    dry-build = host:
-        mkWorkflow "${host}"
-        "nix build .#nixosConfigurations.${host}.config.system.build.toplevel --dry-run";
-
     dry-hosts =
-      (map dry-build)
+      (map (name: host-fn { inherit name; }))
         (names self.nixosConfigurations);
 
-    build-pkg = p:
-        mkWorkflow "${p}-build"
-        "nix build .#${p}";
-
     bpkgs =
-      (map build-pkg)
-        (names self.packages.${pkgs.stdenv.hostPlatform.system});
+      (map (name: pkg-fn { inherit name; }))
+        (names self.packages.${stdenv.hostPlatform.system});
+
+    buildFlows = (dry-hosts ++ bpkgs);
+    onames = (map (x: x.name) override-workflow);
+    reserved = builtins.filter(bf: !(builtins.elem bf.name onames)) buildFlows;
+
+    newBuildFlows =
+      reserved ++ override-workflow;
+
+    # Write an entry for each workflow to the output directory
+    wrapWriter = wf: ''
+      yq -y --yml-out-ver "1.2" > $out/${wf.name}.yaml <<EOF
+      ${(lib.escape ["$"] (lib.generators.toYAML {} wf))}
+      EOF
+    '';
 
     buildscript = lib.strings.concatStringsSep
       "\n"
-      (dry-hosts ++ bpkgs);
+      ((map wrapWriter) newBuildFlows);
 
   in stdenv.mkDerivation {
     name="workflow-codegen";
@@ -51,5 +46,5 @@
         mkdir $out
         ${buildscript}
       '';
-    buildInputs = [ pkgs.python3 ];
+    nativeBuildInputs = [ yq ];
   }
