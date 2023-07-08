@@ -9,7 +9,7 @@
     raccoon.url = "github:nixos/nixpkgs/nixos-22.11";
     nur.url = "github:nix-community/NUR";
     nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
-    nix-doom-emacs.inputs.nixpkgs.follows = "raccoon";
+    # nix-doom-emacs.inputs.nixpkgs.follows = "raccoon";
     nix-alien.url = "github:thiagokokada/nix-alien";
     nix-ld.url = "github:mic92/nix-ld/main";
     hm.url = "github:nix-community/home-manager/release-23.05";
@@ -19,6 +19,8 @@
     coggiebot.url = "github:skarlett/coggie-bot";
     coggiebot.inputs.nixpkgs.follows = "nixpkgs-unstable";
     utils.url = "github:numtide/flake-utils";
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
   };
 
   outputs = {self, ...}@inputs:
@@ -41,10 +43,22 @@
         luninet = import ./modules/luni/client.nix;
         luni-server = import ./modules/luni/server.nix;
         arl-scrape = import ./modules/arl-scrape.nix;
+        project-zomboid = import ./modules/project-zomboid.nix;
+        unallocatedspace = import ./modules/unallocatedspace.nix;
       };
 
       # deploy-rs node configuration
       deploy.nodes = {
+        charmander = {
+          hostname = "10.0.0.2";
+          sshUser = "lunarix";
+          sshOpts = [ "-t" ];
+          magicRollback = false;
+          path =
+            inputs.deploy.lib.x86_64-linux.activate.nixos
+              inputs.self.nixosConfigurations.charmander;
+        };
+
         coggie = {
           hostname = "10.0.0.245";
           profiles.system = {

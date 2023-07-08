@@ -5,49 +5,47 @@
         enable = true;
         keybindings = builtins.fromJSON (builtins.readFile ./keybindings.json);
         extensions =
-        (with pkgs.vscode-marketplace;
-            with pkgs.unstable.vscode-extensions;
-            with pkgs.vscode-marketplace-release;
-        [
-            arrterian.nix-env-selector
+        (with pkgs.vscode-extensions; [
             bbenoist.nix
             eamodio.gitlens
-            github.copilot
             github.vscode-pull-request-github
-            kahole.magit
             matklad.rust-analyzer
             ms-python.vscode-pylance
-            ms-vscode-remote.remote-ssh
             ms-vscode.cmake-tools
-            ms-vscode.cpptools
-            ms-vscode.hexeditor
+            # ms-vscode.hexeditor
+
             ms-vscode.makefile-tools
-            ms-vscode.theme-tomorrowkit
-            ms-vsliveshare.vsliveshare
             stephlin.vscode-tmux-keybinding
             usernamehw.errorlens
-            vadimcn.vscode-lldb
+            pkgs.vscode-extensions.github.copilot
             vscodevim.vim
             vspacecode.vspacecode
             vspacecode.whichkey
-            WakaTime.vscode-wakatime
             bodil.file-browser
-        ]) ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
-            name = "vscode-indent-line";
-            publisher = "sandipchitale";
-            version = "1.0.1";
-            sha256 = "Zygw5XOEEF4Fj7IZyuC+ZKCG8Yb3B0WsD+OwmDBQiMk=";
-        }];
-
+        ])
+        ++
+        (with pkgs.unstable.vscode-extensions; [
+            vadimcn.vscode-lldb
+            kahole.magit
+            # ms-vscode.cpptools
+        ])
+        # ++
+        # (pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
+        #     name = "vscode-lldb";
+        #     publisher = "vadimcn";
+        #     version = "1.9.2";
+        #     sha256 = "Zygw5XOEEF4Fj7IZyuC+ZKCG8Yb3B0WsD+OwmDBQiMk=";
+        # }]);
+        ;
         userSettings = {
             "whichkey.delay" = 900;
             "workbench.quickOpen.delay" = 900;
             "vspacecode.bindingOverrides" = [
                 {
-                "name" = "Git log";
-                "type" = "command";
-                "keys" = "g.g";
-                "command" = "magit.status";
+                    "name" = "Git log";
+                    "type" = "command";
+                    "keys" = "g.g";
+                    "command" = "magit.status";
                 }
                 {
                 "name" = "Terminal";
@@ -82,7 +80,7 @@
             ];
             "editor.autoIndent" = "full";
             "vim.easymotion" = true;
-            "vim.useSystemClipboard" = true;
+            "vim.useSystemClipboard" = false;
             "workbench.colorTheme" = "Default Dark+";
             "rust-analyzer.procMacro.enable" = false;
             "rust-analyzer.procMacro.attributes.enable" = false;
@@ -92,6 +90,7 @@
             # Enable nix LSP.
             "nix.enableLanguageServer" = true;
             "nix.serverPath" = "nil";
+
             # Use nixpkgs-fmt with nil
             "nix.serverSettings" = {
                 nil.formatting.command = [ "nixpkgs-fmt" ];

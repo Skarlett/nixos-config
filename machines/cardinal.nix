@@ -5,7 +5,6 @@
     enable = true;
     device = "/dev/vda";
     efiSupport = false;
-    enableCryptodisk = true;
   };
 
   networking.hostName = "unallocatedspace";
@@ -16,6 +15,13 @@
   networking.lunihost.peers = peers.users ++ peers.gateways;
   services.coggiebot.enable = true;
   services.coggiebot.environmentFile = "/var/lib/coggiebot/env.sh";
+
+  boot.kernel.sysctl."vm.swappiness" = 30;
+
+  services.fail2ban.enable = true;
+  services.fail2ban.bantime = "20m";
+  services.fail2ban.bantime-increment.enable = true;
+  services.openssh.logLevel = "VERBOSE";
 
   # services.journald.extraConfig = ''
   #   [Upload]

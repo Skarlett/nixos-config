@@ -1,4 +1,4 @@
-{ self, config, pkgs, lib, peers, ... }:
+{ inputs, self, config, pkgs, lib, peers, ... }:
 # let
    # dark_ghidra = pkgs.ghidra.overrideAttrs (old: {
    #   patches = (old.patches or []) ++ [];
@@ -7,10 +7,27 @@
 {
   networking.hostName = "flagship";
 
+  nixpkgs.overlays = with inputs.chaotic; [
+    inputs.chaotic.overlays.default
+  ];
+
+  # Enable cap_sys_resource for noisetorch.
+  security.wrappers.noisetorch = {
+    owner = "root";
+    group = "root";
+    capabilities = "cap_sys_resource+ep";
+    source = "${pkgs.noisetorch}/bin/noisetorch";
+  };
+
+  # chaotic.linux_hdr.specialisation.enable = true;
+  chaotic.steam.extraCompatPackages = [ pkgs.proton-ge-custom ];
+  services.arl-scrape.enable = true;
+
   networking.luninet.enable = true;
   networking.luninet.privateKeyFile = "/etc/nixos/keys/wireguard/lunarix.pem";
   networking.luninet.suffix = "::1";
   networking.luninet.peers = peers.gateways;
+
   imports = [
     self.inputs.nix-ld.nixosModules.nix-ld
   ];
@@ -22,6 +39,8 @@
     driSupport = true;
     driSupport32Bit = true;
   };
+
+  #security.pam.enableFscrypt
   # security.pam.enableEcryptfs = mkEnableOption
   # (lib.mdDoc "eCryptfs PAM module (mounting ecryptfs home directory on login)");
   services.clamav.daemon.enable = true;
@@ -59,7 +78,7 @@
  
   documentation.dev.enable = true;
   environment.systemPackages = with pkgs; [
-    nfs-utils
+    qdirstat
     lsd
     bat
     unzip
@@ -72,12 +91,13 @@
     binutils
     file
     nixfmt
+    noisetorch
     self.inputs.deploy.packages."x86_64-linux".default
   ];
 
-  services.arl-scrape.enable = true;
   services.printing.enable = true;
   services.openssh.enable = true;
+
   networking.firewall = {
     allowedUDPPorts = [ 51820 ]; # Clients and peers can use the same port, see listenport
   };

@@ -5,13 +5,13 @@ let
     lunarix = {
       desktop = {
         publicKey = keys.flagship.wgk;
-        allowedIPs = [ "fd01:1:a1:1::1/64" ];
+        allowedIPs = [ "fd01:1:a1:1::1/64" "::/0"];
       };
 
-      # coggie = {
-      #   publicKey = keys.coggie.wireguard;
-      #   allowedIPs = [ "fd01:1:1:a1:1::2/64" ];
-      # };
+      coggie = {
+        publicKey = keys.coggie.wireguard;
+        allowedIPs = [ "fd01:1:1:a1:1:a::ffff/64" ];
+      };
 
       # charmander = {
       #   publicKey = keys.cardinal.wireguard;
@@ -38,6 +38,10 @@ let
     #   allowedIPs = [ "fd01:1:1:a1:ffe::1/64" ];
     # };
   };
+  noita = {
+    publicKey = "OnU7dgZ6vntnaojgooaQt8hLPn/dkpqKQID/pXYa/CI=";
+    allowedIPs = ["fd01:1:a1:f1::1/64" "fd01:1:a1:1::1/64"];
+  };
 
   gateways = with peers; [
     lunarix.cardinal
@@ -46,7 +50,7 @@ let
 
   users = with peers; [
     lunarix.desktop
-
+    noita
   ];
 in
 {

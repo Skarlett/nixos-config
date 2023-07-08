@@ -3,13 +3,16 @@
     inherit system specialArgs;
     modules = [
       ./flagship.nix
+
       ./flagship.hardware.nix
       ../modules/lightbuild.nix
       ../modules/luni/client.nix
       ../modules/arl-scrape.nix
       ../profiles/common.nix
+      inputs.chaotic.nixosModules.default
       inputs.agenix.nixosModules.default
       inputs.nur.nixosModules.nur
+
       inputs.hm.nixosModules.home-manager
       {
         home-manager.users.lunarix = import ../home-manager/flagship.nix;
@@ -63,7 +66,7 @@
       ./coggie.nix
       ./coggie.hardware.nix
       ../modules/luni/server.nix
-      # ./modules/git-ssh.nix
+      ./modules/git-ssh.nix
     ];
   };
 }
