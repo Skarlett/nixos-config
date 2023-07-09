@@ -62,13 +62,16 @@ rec {
       deploy.nodes = {
         charmander = {
           hostname = "10.0.0.2";
-          sshUser = "lunarix";
-          sshOpts = [ "-t" ];
-          magicRollback = false;
-          path =
-            inputs.deploy.lib.x86_64-linux.activate.nixos
-              inputs.self.nixosConfigurations.charmander;
+          profiles.system = {
+            user = "root";
+            sshUser = "lunarix";
+            sshOpts = [ "-t" ];
+            magicRollback = false;
+            path =
+              inputs.deploy.lib.x86_64-linux.activate.nixos
+                inputs.self.nixosConfigurations.charmander;
         };
+      };
 
         coggie = {
           hostname = "10.0.0.245";

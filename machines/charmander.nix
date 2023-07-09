@@ -16,6 +16,7 @@
   };
   networking.firewall.allowedTCPPorts = [ 80 3000 443 ];
 
+  gaming.project-zomboid-server.enable = true;
 
   networking.hostName = "charmander";
   services.openssh.enable = true;

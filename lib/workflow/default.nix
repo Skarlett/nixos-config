@@ -7,7 +7,7 @@ rec {
 
   mkNixosBuild = {name, ...}@args:
     mkWorkflow ({
-        cmd = "nix build .#nixosConfigurations.${name}.config.system.build.toplevel --dry-run";
+      cmd = "nix build .#nixosConfigurations.${name}.config.system.build.toplevel --dry-run";
     } // args);
 
   mkNixBuild = {name, ...}@args:

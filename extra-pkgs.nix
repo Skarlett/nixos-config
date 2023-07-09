@@ -1,4 +1,4 @@
-{inputs, config, pkgs, lib, ...}:
+{self, inputs, config, pkgs, lib, ...}:
 let cfg = {
   inherit (pkgs.stdenv.hostPlatform) system;
     config.allowUnfree = true;
@@ -12,9 +12,13 @@ in
         unstable = import nixpkgs-unstable cfg;
         raccoon = import raccoon cfg; 
       })
-      emacs-overlay.overlays.default
+      (final: prev: {
+        self = self.outputs.packages.${pkgs.stdenv.hostPlatform.system};
+      })
+
       vscode-extensions.overlays.default
-      nur.overlay
       nix-alien.overlays.default
-    ];
+      nur.overlay
+      chaotic.overlays.default
+  ];
 }

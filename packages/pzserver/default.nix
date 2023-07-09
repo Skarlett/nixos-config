@@ -5,7 +5,7 @@ let
     phases = "installPhase";
     installPhase = ''
       mkdir -p $out
-      cp $src $out
+      cp -r $src $out
     '';
   };
 

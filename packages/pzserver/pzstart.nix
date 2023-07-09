@@ -1,6 +1,7 @@
 { stdenv
   , lib
   , bash
+  , makeWrapper
   , steamcmd
   , steam-run
   , pzupdate  # self.outputs.packages.pzupdate
@@ -13,6 +14,7 @@
     phases = "installPhase";
     src = ./pzstart.sh;
     buildInputs = [
+      makeWrapper
       bash
       steamcmd
       steam-run
@@ -20,7 +22,7 @@
     ];
     installPhase = ''
       mkdir -p $out/bin
-      cp $src $out/bin/${name}
+      cp -r $src $out/bin/${name}
       chmod +x $out/bin/${name}
 
       wrapProgram $out/bin/${name} \

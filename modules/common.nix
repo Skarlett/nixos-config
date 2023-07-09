@@ -4,7 +4,6 @@ let
 in
 {
   options.common.enable = lib.mkEnableOption "Enable common configuration";
-
   config = lib.mkIf cfg.enable {
     time.timeZone = "America/Chicago";
     i18n.defaultLocale = "en_US.utf8";

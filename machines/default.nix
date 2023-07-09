@@ -8,7 +8,7 @@ let
       ../modules/luni/server.nix
       ../modules/arl-scrape.nix
       ../modules/unallocatedspace.nix
-
+      ../modules/project-zomboid.nix
       inputs.coggiebot.nixosModules.coggiebot
       inputs.chaotic.nixosModules.default
       inputs.agenix.nixosModules.default
