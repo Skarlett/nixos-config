@@ -13,11 +13,10 @@ let
         allowedIPs = [ "fd01:1:1:a1:1:a::ffff/64" ];
       };
 
-      # charmander = {
-      #   publicKey = keys.cardinal.wireguard;
-      #   allowedIPs = ["::/0"];
-      #   endpoint = "10.0.0.2:51820";
-      # };
+      charmander = {
+        publicKey = keys.charmander.wireguard;
+        allowedIPs = ["::/0"];
+      };
 
       cardinal = {
         publicKey = keys.cardinal.wireguard;
@@ -33,24 +32,30 @@ let
     # };
 
     # # dan
-    # dan.gateway = {
-    #   publicKey = keys.coggie.wireguard;
-    #   allowedIPs = [ "fd01:1:1:a1:ffe::1/64" ];
-    # };
+    dan.gateway = {
+      publicKey = keys.dan.wgk;
+      allowedIPs = [
+        "fd01:1:1:a1:ffe::1/64"
+
+        "fd01:1:a1::ff01" # Charmander
+      ];
+    };
   };
-  noita = {
-    publicKey = "OnU7dgZ6vntnaojgooaQt8hLPn/dkpqKQID/pXYa/CI=";
-    allowedIPs = ["fd01:1:a1:f1::1/64" "fd01:1:a1:1::1/64"];
-  };
+
+  # noita = {
+  #   publicKey = "OnU7dgZ6vntnaojgooaQt8hLPn/dkpqKQID/pXYa/CI=";
+  #   allowedIPs = ["fd01:1:a1:f1::1/64" "fd01:1:a1:1::1/64"];
+  # };
 
   gateways = with peers; [
     lunarix.cardinal
-    # lunarix.charmander
   ];
 
   users = with peers; [
     lunarix.desktop
-    noita
+    lunarix.charmander
+    dan.gateway
+    # noita
   ];
 in
 {

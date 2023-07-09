@@ -1,6 +1,10 @@
 rec {
   description = "NixOS configuration";
   inputs = {
+    # Pinned
+    coggiebot.url = "github:skarlett/coggie-bot/d040dfe03f612120263386f1f1eda3116c4fb235";
+
+    # Rolling
     nixos-generators.url = "github:nix-community/nixos-generators";
     nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -15,7 +19,6 @@ rec {
     agenix.url = "github:ryantm/agenix";
     deploy.url = "github:serokell/deploy-rs";
     vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
-    coggiebot.url = "github:skarlett/coggie-bot";
     coggiebot.inputs.nixpkgs.follows = "nixpkgs-unstable";
     utils.url = "github:numtide/flake-utils";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
@@ -70,8 +73,8 @@ rec {
             path =
               inputs.deploy.lib.x86_64-linux.activate.nixos
                 inputs.self.nixosConfigurations.charmander;
+          };
         };
-      };
 
         coggie = {
           hostname = "10.0.0.245";

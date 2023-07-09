@@ -1,4 +1,7 @@
 {
+
+    dan.wgk = "fANz8f8OOU4Pe95QeZGEBiqnvN35I9n5IvCVEbqZKFo=";
+
     flagship = {
         lunarix.ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILcon6Pn5nLNXEuLH22ooNR97ve290d2tMNjpM8cTm2r";
         root.ssh = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOrdriTG3e3SmTnhPeTJJH7WEwng5rS7epV/znc+5Zc4";

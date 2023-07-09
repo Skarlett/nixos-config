@@ -18,10 +18,13 @@
     useSubstitutes = true;
   };
 
+
   networking.firewall.allowedTCPPorts = [ 80 3000 443 ];
 
   gaming.project-zomboid-server.enable = true;
   gaming.project-zomboid-server.netfaces = ["luni" "enp4s0f0"];
+
+
 
   networking.hostName = "charmander";
   services.openssh.enable = true;
