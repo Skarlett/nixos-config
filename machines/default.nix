@@ -36,6 +36,7 @@ in
     inherit system specialArgs;
     modules =
       [
+        ../modules/accessible.nix
         ./charmander.nix
         ./charmander.hardware.nix
         "${inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
@@ -46,6 +47,7 @@ in
   cardinal = inputs.nixpkgs.lib.nixosSystem {
     inherit system specialArgs;
     modules = [
+        ../modules/accessible.nix
         ./cardinal.nix
         ./cardinal.hardware.nix
       ] ++ mods;
@@ -60,6 +62,7 @@ in
     inherit system specialArgs;
     check = false;
     modules = [
+      ../modules/accessible.nix
       ./live.nix
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     ] ++ mods;
@@ -69,6 +72,7 @@ in
     inherit specialArgs;
     system = "aarch64-linux";
     modules = [
+      ../modules/accessible.nix
       "${inputs.nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
       ./coggie.nix
