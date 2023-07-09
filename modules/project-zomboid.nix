@@ -38,25 +38,21 @@ in
       default = "pzserver";
     };
 
-    installDir = mkOption {
-      type = types.str;
-      default = "/var/lib/pzserver";
-    };
-
     servers = mkOption {
       type = types.listOf types.str;
       description = "List of servers to run";
     };
   };
 
-  config = mkIf cfg.enable {
+  config = mkIf cfg.enable
+  {
     users.users.${cfg.user} = {
       isSystemUser = true;
       group = cfg.group;
-      home = cfg.dataDir;
+      home = cfg.installDir;
       createHome = true;
-      extraGroups = cfg.extraGroups;
     };
+    users.groups.${cfg.group} = {};
 
     systemd.services.project-zomboid-server = {
       description = "Project Zomboid Server";
@@ -67,7 +63,7 @@ in
         Type = "simple";
         User = cfg.user;
         Group = cfg.group;
-        WorkingDirectory = cfg.dataDir;
+        WorkingDirectory = cfg.package.passthru.pzdir;
         ExecStart = "${cfg.package}/bin/pzstart";
       };
     };

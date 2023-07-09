@@ -4,9 +4,8 @@
   , makeWrapper
   , steamcmd
   , steam-run
-  , pzupdate  # self.outputs.packages.pzupdate
+  , pzupdate
   , pzconfig  # self.outputs.packages.pzconf.vanilla
-  , pzdir ? "/var/lib/pzserver"
   # , pzworkshop # self.outputs.packages.pzworkshop
 }:
   stdenv.mkDerivation rec {
@@ -18,6 +17,8 @@
       bash
       steamcmd
       steam-run
+      pzupdate
+      pzconfig
       # pzworkshop
     ];
     installPhase = ''
@@ -28,6 +29,11 @@
       wrapProgram $out/bin/${name} \
         --prefix PATH : ${lib.makeBinPath buildInputs} \
         --set PZCONFIG ${pzconfig} \
-        --set PZDIR ${pzdir} \
+        --set PZUPDATE ${pzupdate}/pzupdate.txt \
+        --set PZDIR ${pzupdate.passthru.pzdir} \
       '';
+    passthru = {
+      inherit pzconfig pzupdate;
+      pzdir = pzupdate.passthru.pzdir;
+    };
  }

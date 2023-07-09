@@ -8,7 +8,7 @@
   imports = [
     self.inputs.nix-ld.nixosModules.nix-ld
   ];
-
+  nixpkgs.config.allowUnfree = true;
   # nixpkgs.overlays = with inputs.chaotic; [
   #   inputs.chaotic.overlays.default
   # ];

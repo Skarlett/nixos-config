@@ -4,8 +4,8 @@
     name = "pzupdate.txt";
     phases = "buildPhase";
     buildPhase = ''
-      mkdir -p $out/bin
-      cat >> $out/bin/${name} <<EOF
+      mkdir -p $out
+      cat >> $out/${name} <<EOF
       @ShutdownOnFailedCommand 1
       @NoPromptForPassword 1
       force_install_dir ${pzdir}

@@ -10,15 +10,14 @@ let
   };
 
   vanilla = conf-builder ./servertest "servertest";
-  pzdir = "/srv/planetz";
 in
 rec {
   pzupdate = callPackage ./pzupdate.nix {
-    inherit pzdir;
+    pzdir = "/srv/planetz";
   };
 
   pzstart = callPackage ./pzstart.nix {
-    inherit pzupdate pzdir;
+    inherit pzupdate;
     pzconfig = vanilla;
   };
 }

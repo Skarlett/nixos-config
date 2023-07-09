@@ -1,7 +1,3 @@
-PZDIR=${PZDIR:-"/var/lib/project-zomboid"}
-PZCONFIG=${PZCONFIG:-"$PZDIR/Server"}
-PZUPDATE=${STEAMCMD:-"$PZDIR/pzupdate.txt"}
-
 if [ ! -f $PZUPDATE ]; then
     echo "No update script found at $PZUPDATE"
     exit 1
@@ -10,6 +6,9 @@ fi
 # pz-workshops --print-missing $PZINI || exit 1
 # run update script first
 steamcmd +runscript $PZUPDATE
+
+mkdir -p $PZDIR/Server
+
 cp -f $PZDEPLOY_CONFIG/* $PZDIR/Server
 
 if [ -e $PZINI ]; then
@@ -17,9 +16,4 @@ if [ -e $PZINI ]; then
     cp -f $PZINI $PZDIR
 fi
 
-export LD_LIBRARY_PATH="${PZDIR}/linux64:${PZDIR}/natives:${PZDIR}:${PZDIR}/jre64/lib/amd64:${LD_LIBRARY_PATH}"
-export LD_PRELOAD="${LD_PRELOAD}:${PZDIR}/libjsig.so"
-
-pushd $PZDIR
-${PZDIR}/ProjectZomboid64 "$@"
-popd
+steam-run bash ${PZDIR}/start-server.sh
