@@ -1,43 +1,31 @@
 {lib, keys }:
 let
+
   # Entire network: fd01:1:1::/48
   peers = {
     lunarix = {
       desktop = {
-        publicKey = keys.flagship.wgk;
-        allowedIPs = [ "fd01:1:a1:1::1/64" "::/0"];
-      };
-
-      coggie = {
-        publicKey = keys.coggie.wireguard;
-        allowedIPs = [ "fd01:1:1:a1:1:a::ffff/64" ];
+        publicKey = "pZZcZFL6ejkYlcfIXe06AkALIcbTGBtIAjxGT0LfZ1g=";
+        allowedIPs = ["fd01:1:a1:1::1"];
       };
 
       charmander = {
-        publicKey = keys.charmander.wireguard;
-        allowedIPs = ["::/0"];
+        publicKey = "8Mf/gY7KnLl3rTQKN5I7fJIUJ6fEzBwget3YyRwM61Y=";
+        allowedIPs = ["fd01:1:a1:1::2"];
       };
 
       cardinal = {
-        publicKey = keys.cardinal.wireguard;
+        publicKey = "LIP2yM8DbX563oRbtDGn1WxzPiBXUP6tCLbcnXXUOz4=";
         allowedIPs = ["::/0"];
         endpoint = "unallocatedspace.dev:51820";
       };
     };
 
-    # jeff
-    # jeff.gateway = {
-    #   publicKey = keys.coggie.wireguard;
-    #   allowedIPs = [ "fd01:1:1:a1:420::1/64" ];
-    # };
-
     # # dan
     dan.gateway = {
-      publicKey = keys.dan.wgk;
+      publicKey = "fANz8f8OOU4Pe95QeZGEBiqnvN35I9n5IvCVEbqZKFo=";
       allowedIPs = [
-        "fd01:1:1:a1:ffe::1/64"
-
-        "fd01:1:a1::ff01" # Charmander
+        "fd01:1:1:a1:ffe::1"
       ];
     };
   };
@@ -55,7 +43,6 @@ let
     lunarix.desktop
     lunarix.charmander
     dan.gateway
-    # noita
   ];
 in
 {
