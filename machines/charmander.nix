@@ -1,11 +1,12 @@
-{config, pkgs, lib, ...}:
+{config, pkgs, lib, peers, ...}:
 {
   boot.kernelPackages = pkgs.linuxPackages_4_19;
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sde";
 
-  networking.lunihost.enable = true;
-  networking.lunihost.suffix = "::ff01";
+  networking.luninet.enable = true;
+  networking.luninet.suffix = "::2";
+  networking.luninet.peers = peers.gateways;
 
   common.enable = true;
   nixpkgs.config.allowUnfree = true;
