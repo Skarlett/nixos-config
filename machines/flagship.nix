@@ -40,6 +40,23 @@
     driSupport32Bit = true;
   };
 
+
+  networking.firewall.allowedUDPPorts = [ 51820 51821 ];
+  networking.wg-quick.interfaces.luni6 = {
+    address = ["fd01:1:a1:1::1"];
+    privateKeyFile = "/etc/nixos/keys/wireguard/6/lunarix.pem";
+    listenPort = 51820;
+    peers = with peers; prot-ip ipv6 gateways;
+  };
+
+  networking.wg-quick.interfaces.luni4 = {
+    address = ["10.51.0.1"];
+    privateKeyFile = "/etc/nixos/keys/wireguard/4/lunarix.pem";
+    listenPort = 51821;
+    peers = with peers; prot-ip ipv4 gateways;
+  };
+
+
   #security.pam.enableFscrypt
   # security.pam.enableEcryptfs = mkEnableOption
   # (lib.mdDoc "eCryptfs PAM module (mounting ecryptfs home directory on login)");
@@ -97,10 +114,6 @@
 
   services.printing.enable = true;
   services.openssh.enable = true;
-
-  networking.firewall = {
-    allowedUDPPorts = [ 51820 ]; # Clients and peers can use the same port, see listenport
-  };
 
   # services.syncthing = {
   #   enable = true;

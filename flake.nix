@@ -90,7 +90,7 @@ rec {
         };
 
         cardinal = {
-          hostname = "unallocatedspace.dev";
+          hostname = "172.245.82.235";
           profiles.system = {
             user = "root";
             sshUser = "lunarix";
