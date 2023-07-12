@@ -11,56 +11,67 @@
   networking.hostName = "unallocatedspace";
   services.openssh.settings.PasswordAuthentication = false;
 
-
-
   networking.firewall = {
       allowedUDPPorts = [
         51820
+        51821
       ];
     };
 
-  boot.kernel.sysctl."net.ipv6.conf.luna6.ip_forward" = 1;
-  boot.kernel.sysctl."net.ipv4.conf.luna4.ip_forward" = 1;
+  boot.kernel.sysctl."net.ipv6.conf.luna.ip_forward" = 1;
+  boot.kernel.sysctl."net.ipv4.conf.luna.ip_forward" = 1;
+
+  networking.nat.enable = true;
+  networking.nat.externalInterface = "ens3";
+  networking.nat.internalInterfaces = [ "luni" ];
+
 
   # fd01:8cae:d246:5f03:XXXX:XXXX:XXXX:XXXX
   #  16    32   48   64   80   96  112  128
-  networking.wireguard.interfaces.luni6 =
+  networking.wireguard.interfaces.luni =
     {
       postSetup = ''
-         ${pkgs.iptables}/bin/ip6tables -A FORWARD -i luni6 -j ACCEPT
+         ${pkgs.iptables}/bin/ip6tables -A FORWARD -i luni -j ACCEPT
          ${pkgs.iptables}/bin/ip6tables -t nat -A POSTROUTING -o luni6 -j MASQUERADE
+
+
+        ${pkgs.iptables}/bin/iptables -A FORWARD -i luni -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o luni -j MASQUERADE
       '';
 
       postShutdown = ''
          ${pkgs.iptables}/bin/ip6tables -D FORWARD -i luni6 -j ACCEPT
-         ${pkgs.iptables}/bin/ip6tables -t nat -D POSTROUTING -o luni6 -j MASQUERADE
+         ${pkgs.iptables}/bin/ip6tables -t nat -D POSTROUTING -o luni -j MASQUERADE
+
+         ${pkgs.iptables}/bin/iptables -D FORWARD -i luni4 -j ACCEPT
+         ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o luni -j MASQUERADE
       '';
 
-      peers = with peers; prot-ip ipv6 (users ++ gateways);
-      ips = ["fd01:1:a1::ff00/48"];
+      peers = with peers; (users ++ gateways);
+      ips = ["fd01:1:a1::ff00/48" "10.51.0.128/24"];
       listenPort = 51820;
       privateKeyFile = "/var/lib/wireguard/privatekey";
     };
 
   # fd01:8cae:d246:5f03:XXXX:XXXX:XXXX:XXXX
   #  16    32   48   64   80   96  112  128
-  networking.wireguard.interfaces.luni4 =
-    {
-      # postSetup = ''
-      #    ${pkgs.iptables}/bin/iptables -A FORWARD -i luni4 -j ACCEPT
-      #    ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o luni4 -j MASQUERADE
-      # '';
+  # networking.wireguard.interfaces.luni4 =
+  #   {
+  #     # postSetup = ''
+  #     #    ${pkgs.iptables}/bin/iptables -A FORWARD -i luni4 -j ACCEPT
+  #     #    ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o luni4 -j MASQUERADE
+  #     # '';
 
-      # postShutdown = ''
-      #    ${pkgs.iptables}/bin/iptables -D FORWARD -i luni4 -j ACCEPT
-      #    ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o luni4 -j MASQUERADE
-      # '';
+  #     # postShutdown = ''
+  #     #    ${pkgs.iptables}/bin/iptables -D FORWARD -i luni4 -j ACCEPT
+  #     #    ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o luni4 -j MASQUERADE
+  #     # '';
 
-      peers = with peers; prot-ip ipv4 (users ++ gateways);
-      ips = ["10.51.0.255/24"];
-      listenPort = 51821;
-      privateKeyFile = "/var/lib/wireguard/ipv4-privatekey";
-    };
+  #     peers = with peers; prot-ip ipv4 (users ++ gateways);
+  #     ips = ["10.51.0.255/24"];
+  #     listenPort = 51821;
+  #     privateKeyFile = "/var/lib/wireguard/ipv4-privatekey";
+  #   };
 
   services.coggiebot.enable = true;
   services.coggiebot.environmentFile = "/var/lib/coggiebot/env.sh";

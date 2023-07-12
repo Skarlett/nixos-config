@@ -1,24 +1,28 @@
 {config, pkgs, lib, peers, ...}:
 {
+  nixpkgs.config.allowUnfree = true;
   boot.kernelPackages = pkgs.linuxPackages_4_19;
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sde";
 
   networking.firewall.allowedUDPPorts = [ 51820 51821 16261 16262];
 
-  networking.wg-quick.interfaces.luni6 = {
-    address = ["fd01:1:a1:1::2"];
+  networking.wg-quick.interfaces.luni = {
+    address = ["fd01:1:a1:1::2" "10.51.0.2"];
     privateKeyFile = "/var/lib/wireguard/privatekey";
     listenPort = 51820;
-    peers = with peers; prot-ip ipv6 gateways;
+    peers = peers.gateways;
   };
 
-  networking.wg-quick.interfaces.luni4 = {
-    address = ["10.51.0.2"];
-    privateKeyFile = "/var/lib/wireguard/ipv4-privatekey";
-    listenPort = 51821;
-    peers = with peers; lib.traceValSeqN 2 (prot-ip ipv4 gateways);
-  };
+  boot.kernel.sysctl."net.ipv6.conf.luna.ip_forward" = 1;
+  boot.kernel.sysctl."net.ipv4.conf.luna.ip_forward" = 1;
+
+  # networking.wg-quick.interfaces.luni4 = {
+  #   address = ["10.51.0.2"];
+  #   privateKeyFile = "/var/lib/wireguard/ipv4-privatekey";
+  #   listenPort = 51821;
+  #   peers = with peers; lib.traceValSeqN 2 (prot-ip ipv4 gateways);
+  # };
 
  #  # networking.luninet.enable = true;
  #  # networking.luninet.suffix = "::2";
@@ -108,8 +112,6 @@
   boot.kernel.sysctl."net.ipv6.conf.all.ip_forward" = 1;
 
   common.enable = true;
-  nixpkgs.config.allowUnfree = true;
-
   services.hydra = {
     enable = true;
     hydraURL = "http://localhost:3000";

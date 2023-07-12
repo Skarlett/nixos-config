@@ -57,6 +57,7 @@ in
     };
 
 
+
     boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
     boot.kernel.sysctl."net.ipv6.conf.all.ip_forward" = 1;
     # fd01:8cae:d246:5f03:XXXX:XXXX:XXXX:XXXX

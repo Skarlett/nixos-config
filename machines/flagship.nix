@@ -27,10 +27,10 @@
   chaotic.steam.extraCompatPackages = [ pkgs.proton-ge-custom ];
   services.arl-scrape.enable = true;
 
-  networking.luninet.enable = true;
-  networking.luninet.privateKeyFile = "/etc/nixos/keys/wireguard/lunarix.pem";
-  networking.luninet.suffix = "::1";
-  networking.luninet.peers = peers.gateways;
+  # networking.luninet.enable = true;
+  # networking.luninet.privateKeyFile = "/etc/nixos/keys/wireguard/lunarix.pem";
+  # networking.luninet.suffix = "::1";
+  # networking.luninet.peers = peers.gateways;
 
   nix.settings.trusted-users = [ "lunarix" ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -42,19 +42,19 @@
 
 
   networking.firewall.allowedUDPPorts = [ 51820 51821 ];
-  networking.wg-quick.interfaces.luni6 = {
-    address = ["fd01:1:a1:1::1"];
+  networking.wg-quick.interfaces.luni = {
+    address = ["fd01:1:a1:1::1" "10.51.0.1"];
     privateKeyFile = "/etc/nixos/keys/wireguard/6/lunarix.pem";
     listenPort = 51820;
-    peers = with peers; prot-ip ipv6 gateways;
+    peers = peers.gateways;
   };
 
-  networking.wg-quick.interfaces.luni4 = {
-    address = ["10.51.0.1"];
-    privateKeyFile = "/etc/nixos/keys/wireguard/4/lunarix.pem";
-    listenPort = 51821;
-    peers = with peers; prot-ip ipv4 gateways;
-  };
+  # networking.wg-quick.interfaces.luni4 = {
+  #   address = ["10.51.0.1"];
+  #   privateKeyFile = "/etc/nixos/keys/wireguard/4/flagship.pem";
+  #   listenPort = 51821;
+  #   peers = with peers; prot-ip ipv4 gateways;
+  # };
 
 
   #security.pam.enableFscrypt
