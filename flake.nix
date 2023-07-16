@@ -64,7 +64,7 @@ rec {
       # deploy-rs node configuration
       deploy.nodes = {
         charmander = {
-          hostname = "10.0.0.2";
+          hostname = "10.0.0.61";
           profiles.system = {
             user = "root";
             sshUser = "lunarix";

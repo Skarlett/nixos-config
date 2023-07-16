@@ -1,7 +1,7 @@
 {config, pkgs, lib, peers, ...}:
 {
   nixpkgs.config.allowUnfree = true;
-  boot.kernelPackages = pkgs.linuxPackages_4_19;
+  # boot.kernelPackages = pkgs.linuxPackages_4_19;
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sde";
 
@@ -12,76 +12,108 @@
     privateKeyFile = "/var/lib/wireguard/privatekey";
     listenPort = 51820;
     peers = peers.gateways;
+    # postUp = ''
+    #   ip add route fd01:1:a1::/48 dev luni
+    #   ip add route 10.51.0.0/24 dev luni
+    # '';
+
+    # postDown = ''
+    #   ip route del fd01:1:a1::/48 dev luni
+    #   ip route del 10.51.0.0/24 dev luni
+    #   '';
   };
 
   boot.kernel.sysctl."net.ipv6.conf.luna.ip_forward" = 1;
   boot.kernel.sysctl."net.ipv4.conf.luna.ip_forward" = 1;
 
-  # networking.wg-quick.interfaces.luni4 = {
-  #   address = ["10.51.0.2"];
-  #   privateKeyFile = "/var/lib/wireguard/ipv4-privatekey";
-  #   listenPort = 51821;
-  #   peers = with peers; lib.traceValSeqN 2 (prot-ip ipv4 gateways);
+
+  # virtualisation.oci-containers.backend = "podman";
+  # virtualisation.oci-containers.containers = {
+  #   container-name = {
+  #     image = "container-image";
+  #     autoStart = true;
+  #     ports = [ "127.0.0.1:1234:1234" ];
+  #   };
   # };
 
- #  # networking.luninet.enable = true;
- #  # networking.luninet.suffix = "::2";
- #  # networking.luninet.peers = peers.gateways ++ [
- #  #   peers.peers.lunarix.desktop
- #  # ];
- # # https://superuser.com/questions/1776851/routing-wireguard-peers-traffic-via-another-peer
- #  systemd.network = {
- #    enable = true;
- #    netdevs = {
- #      "10-luni" = {
- #        netdevConfig = {
- #          Kind = "wireguard";
- #          Name = "luni";
- #          MTUBytes = "1400";
- #        };
+  # networking.wg-quick.interfaces.luni = {
+  #   address = peers.peers.lunarix.charmander.allowedIPs;
+  #   privateKeyFile = "/var/lib/wireguard/privatekey";
+  #   listenPort = 51821;
+  #   peers = peers.gateways;
+  # };
 
- #        # See also man systemd.netdev (also contains info on the permissions of the key files)
- #        wireguardConfig = {
- #          # Don't use a file from the Nix store as these are world readable.
- #          PrivateKeyFile = "/var/lib/wireguard/privatekey";
- #          ListenPort = 51820;
- #        };
+  # networking.luninet.enable = true;
+  # networking.luninet.suffix = "::2";
+  # networking.luninet.peers = peers.gateways ++ [
+  #   peers.peers.lunarix.desktop
+  # ];
+ # https://superuser.com/questions/1776851/routing-wireguard-peers-traffic-via-another-peer
+  # systemd.network = {
+  #   enable = true;
+  #   netdevs = {
+  #     "10-luni" = {
+  #       netdevConfig = {
+  #         Kind = "wireguard";
+  #         Name = "luni";
+  #         MTUBytes = "1400";
+  #       };
 
- #        wireguardPeers = [
- #            { wireguardPeerConfig =
- #              {
- #                AllowedIPs = ["::/0"];
- #                PublicKey = "LIP2yM8DbX563oRbtDGn1WxzPiBXUP6tCLbcnXXUOz4=";
- #                Endpoint = "172.245.82.235:51820";
- #              };
- #              }
- #          ];
- #      };
- #    };
+  #       # See also man systemd.netdev (also contains info on the permissions of the key files)
+  #       wireguardConfig = {
+  #         PrivateKeyFile = "/var/lib/wireguard/privatekey";
+  #         ListenPort = 51820;
+  #       };
 
- #    networks.luni6 = {
- #      # See also man systemd.network
- #      matchConfig.Name = "luni";
- #      # routes = [{
- #      #   routeOptions = {
- #      #     Destination = "fd01:1:a1::/48";
- #      #     Gateway = "fd01:1:a1:ff00";
- #      # };}];
- #      # IP addresses the client interface will have
- #      address = [
- #        "fd01:1:a1:1::2"
- #      ];
- #      DHCP = "no";
- #      # dns = [ "fc00::53" ];
- #      # ntp = [ "fc00::123" ];
- #      gateway = [
- #        "fd01:1:a1:ff00"
- #      ];
- #      networkConfig = {
- #        IPv6AcceptRA = false;
- #      };
- #    };
- #  };
+  #       wireguardPeers = [
+  #           { wireguardPeerConfig =
+  #             {
+  #               AllowedIPs = peers.peers.lunarix.cardinal.allowedIPs;
+  #               PublicKey =  peers.peers.lunarix.cardinal.publicKey;
+  #               Endpoint = "unallocatedspace.dev:51820";
+  #             };
+  #           }
+  #         ];
+  #     };
+  #   };
+
+  #   networks.luni = {
+  #     # See also man systemd.network
+  #     matchConfig.Name = "luni";
+  #     routes = [
+  #       {
+  #         routeConfig = {
+  #           Destination = "fd01:1:a1::/48";
+  #           Gateway = "luni";
+  #         };
+  #        }
+  #       {
+  #         routeConfig = {
+  #           Destination = "10.51.0.0/24";
+  #           Gateway = "luni";
+  #         };
+  #       }
+  #     ];
+  #     # IP addresses the client interface will have
+  #     address = [
+  #       "fd01:1:a1:1::2"
+  #       "10.51.0.2"
+  #     ];
+  #     DHCP = "no";
+  #     # dns = [ "fc00::53" ];
+  #     # ntp = [ "fc00::123" ];
+  #     gateway = [
+  #       # "fd01:1:a1:ff00"
+  #       # "10.51.0.128"
+  #     ];
+
+  #     networkConfig = {
+  #       IPv6AcceptRA = false;
+  #     };
+
+  #     # linkConfig.RequiredForOnline = "routable";
+  #   };
+  # };
 
   environment.systemPackages = [ pkgs.wireguard-tools ];
 

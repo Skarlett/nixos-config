@@ -51,7 +51,7 @@ in
         then { allowedUDPPorts = [ cfg.directPort cfg.negotiationPort]; }
         else { interfaces = builtins.foldl'
           (s: c: s // {
-            ${c}.allowedUDPPorts = [ cfg.directPort cfg.negotiationPort];
+            ${c}.allowedUDPPorts = [ cfg.directPort cfg.negotiationPort ];
           }) {} cfg.netfaces;
       };
     in

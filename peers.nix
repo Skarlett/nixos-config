@@ -10,24 +10,19 @@ let
       #   via fd01:1:1::ff00 dev luni
       # ip add route
       desktop = {
-        # publicKey.v4 = "HDAevYnp9azFNQS0YRPyJv7Edsko37EQO+/UWhJBDEQ=";
         publicKey = "pZZcZFL6ejkYlcfIXe06AkALIcbTGBtIAjxGT0LfZ1g=";
         allowedIPs = ["fd01:1:a1:1::1/128" "10.51.0.1/32"];
-        # allowedIPs.v4 = ["10.51.0.1/32"];
         persistentKeepalive = 25;
       };
 
       charmander = {
-        # publicKey.v4 = "5CHKh5kh0sZrK0g7+hCwM3aVCls3mnsKd2PnruOL+FE=";
         publicKey = "8Mf/gY7KnLl3rTQKN5I7fJIUJ6fEzBwget3YyRwM61Y=";
         allowedIPs = ["fd01:1:a1:1::2/128" "10.51.0.2/32"];
-        # allowedIPs.v4 = ["10.51.0.2/32"];
         persistentKeepalive = 25;
       };
 
       cardinal = {
         publicKey = "LIP2yM8DbX563oRbtDGn1WxzPiBXUP6tCLbcnXXUOz4=";
-        # publicKey.v4 = "alDDI4srLjbl3eZN98OPq0NrfZZDe2/j2oBl0zHKDi4=";
         allowedIPs = ["fd01:1:a1::/48" "10.51.0.0/24"];
         endpoint = "172.245.82.235:51820";
       };
@@ -63,6 +58,11 @@ let
     persistentKeepalive = 25;
   };
 
+  t3mpt0n.desktop = {
+    publicKey = "bwvU8oStrpW5oPd10hoORwbtawwm0Dxf2IklgNCtz0M=";
+    allowedIPs = ["fd01:1:a1:ee::1" "10.51.0.12"];
+  };
+
   zach.desktop = {
     publicKey = "ukg+dd04c+vgAlb4ujz8w2Dv7heQZ6mmwEYtDMFgIkw=";
     allowedIPs = ["fd01:1:a1:216::1" "10.51.0.7"];
@@ -74,17 +74,48 @@ let
   #   allowedIPs = ["fd01:1:a1:f1::1/64" "fd01:1:a1:1::1/64"];
   # };
 
+  conic.desktop = {
+    publicKey = "tuBigIORaghdhaEZd+h9ELeZWthQtEjEewaBcIXb5y8=";
+    allowedIPs = ["fd01:1:a1:23e::1/128" "10.51.0.14/32"];
+    persistentKeepalive = 25;
+  };
+
+  heccin.desktop = {
+    publicKey = "D+rNqpJ8RSaflldKRhWb8Q/p7Cox+Y/mLdUJUcjsyTs=";
+    allowedIPs = ["fd01:1:a1:23f::1/128" "10.51.0.13/32"];
+    persistentKeepalive = 25;
+  };
+
+  simcra.desktop = {
+    publicKey = "iKKn0hxQdScrXXkpmIC83Zgo0Y3GexCQ4+Qd/6NryUc=";
+    allowedIPs = ["fd01:1:a1:24f::1/128" "10.51.0.25/32"];
+    persistentKeepalive = 25;
+  };
+
+  k10.desktop = {
+    publicKey = "bVMpoVy4nSiCX5skVtD3oOFaL0DJKMvxNB5XMIpjbg4=";
+    allowedIPs = ["fd01:1:a1:14f::1/128" "10.51.0.15/32"];
+    persistentKeepalive = 25;
+  };
+
+
+
   gateways = with peers; [
     lunarix.cardinal
   ];
 
   users = with peers; [
+    k10.desktop
     lunarix.desktop
     lunarix.charmander
     dan.gateway
     physcedelic.gateway
     snordalf.gateway
     zach.desktop
+    t3mpt0n.desktop
+    conic.desktop
+    heccin.desktop
+    simcra.desktop
   ];
 
 in
