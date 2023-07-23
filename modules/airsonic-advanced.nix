@@ -18,6 +18,29 @@ in
       description = "Open port in firewall";
     };
 
+    maxMemory = mkOption {
+      type = types.int;
+      default = 4096;
+      description = "Maximum memory to use";
+    };
+
+    jvmOptions = mkOption {
+      type = types.listOf types.str;
+      default = ["-server"];
+      description = "Additional JVM options";
+    };
+
+    jvmExtraOptions = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "Additions to default JVM options";
+    };
+
+    listenAddress = mkOption {
+      type = types.str;
+      default = "0.0.0.0";
+    };
+
     war = mkOption {
       default =
         "${pkgs.self.airsonic-advanced-war.outPath}/webapps/airsonic.war";
@@ -28,13 +51,11 @@ in
     services.airsonic = {
         enable = true;
         jre = pkgs.openjdk11;
-        maxMemory = 4096;
+        maxMemory = cfg.maxMemory;
         war = cfg.war;
         port = cfg.port;
-        jvmOptions = [
-          "-server"
-        ];
-        listenAddress = "0.0.0.0";
+        jvmOptions = cfg.jvmOptions ++ cfg.jvmExtraOptions;
+        listenAddress = cfg.listenAddress;
     };
     networking.firewall.allowedTCPPorts = [ cfg.port ];
   };
