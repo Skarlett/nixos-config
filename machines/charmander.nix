@@ -1,5 +1,6 @@
-{config, pkgs, lib, peers, ...}:
+{self, config, pkgs, lib, peers, ...}:
 {
+  remote-access.lunarix = true;
   nixpkgs.config.allowUnfree = true;
   # boot.kernelPackages = pkgs.linuxPackages_4_19;
   boot.loader.grub.enable = true;
@@ -22,6 +23,10 @@
     #   ip route del 10.51.0.0/24 dev luni
     #   '';
   };
+
+
+
+  self.packages.${pkgs.system}.airsonic-advanced-war;
 
   boot.kernel.sysctl."net.ipv6.conf.luna.ip_forward" = 1;
   boot.kernel.sysctl."net.ipv4.conf.luna.ip_forward" = 1;

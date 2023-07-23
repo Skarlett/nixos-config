@@ -1,6 +1,8 @@
 {config, lib, pkgs, peers, ...}:
 {
   common.enable = true;
+  remote-access.lunarix = true;
+
   boot.kernelPackages = pkgs.linuxPackages_5_10_hardened;
   boot.loader.grub = {
     enable = true;

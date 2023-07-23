@@ -4,6 +4,7 @@
 
   common.enable = true;
   common.headless = true;
+  remote-access.lunarix = true;
 
   services.lvm.enable = false;
   system.stateVersion = "22.05";
