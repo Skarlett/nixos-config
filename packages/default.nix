@@ -19,6 +19,8 @@ self-lib.withSystem (system:
         FQDN = "unallocatedspace.dev";
         REDIRECT="https://github.com/skarlett";
       };
+
+      packages.airsonic-advanced = pkgs.callPackage ./airsonic-advanced.nix {};
     }
 
     { packages = builtins.removeAttrs (pkgs.callPackage ./pzserver {})
