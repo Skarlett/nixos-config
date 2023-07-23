@@ -98,14 +98,11 @@ let
     persistentKeepalive = 25;
   };
 
-
-
   gateways = with peers; [
     lunarix.cardinal
   ];
 
   users = with peers; [
-    k10.desktop
     lunarix.desktop
     lunarix.charmander
     dan.gateway
@@ -116,12 +113,10 @@ let
     conic.desktop
     heccin.desktop
     simcra.desktop
+    k10.desktop
   ];
 
 in
 {
-  ipv6 = u: u // { publicKey = u.publicKey.v6; allowedIPs = u.allowedIPs.v6; };
-  ipv4 = u: u // { publicKey = u.publicKey.v4; allowedIPs = u.allowedIPs.v4; };
-  prot-ip = f: l: map (s: s // f s) l;
   inherit peers gateways users;
 }
