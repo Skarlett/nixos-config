@@ -59,6 +59,7 @@ rec {
         arl-scrape = import ./modules/arl-scrape.nix;
         project-zomboid = import ./modules/project-zomboid.nix;
         unallocatedspace = import ./modules/unallocatedspace.nix;
+        airsonic-advanced = import ./modules/airsonic-advanced.nix;
       };
 
       # deploy-rs node configuration
