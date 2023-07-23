@@ -1,3 +1,8 @@
+# README !!
+# enabling this module requires you run
+# pzserver manually at least once to set
+# database credentials
+# !!
 { config, lib, pkgs, ... }:
 let cfg = config.gaming.project-zomboid-server;
 in
@@ -65,6 +70,18 @@ in
             createHome = true;
           };
           users.groups.${cfg.group} = {};
+
+          systemd.sockets.project-zomboid-server = {
+            bindsTo = [ "project-zomboid-server.service" ];
+            socketConfig = {
+              ListenFIFO = "/run/project-zomboid-server.stdin";
+              SocketMode = "0660";
+              SocketUser = "pzserver";
+              SocketGroup = "pzserver";
+              RemoveOnStop = true;
+              FlushPending = true;
+            };
+          };
 
           systemd.services.project-zomboid-server = {
             description = "Project Zomboid Server";
