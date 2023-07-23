@@ -20,7 +20,7 @@ self-lib.withSystem (system:
         REDIRECT="https://github.com/skarlett";
       };
 
-      packages.airsonic-advanced = pkgs.callPackage ./airsonic-advanced.nix {};
+      packages.airsonic-advanced-war = pkgs.callPackage ./airsonic-advanced.nix {};
     }
 
     { packages = builtins.removeAttrs (pkgs.callPackage ./pzserver {})
