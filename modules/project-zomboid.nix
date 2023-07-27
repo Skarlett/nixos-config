@@ -47,6 +47,17 @@ in
       type = lib.types.listOf lib.types.str;
       description = "List of servers to run";
     };
+
+    declarative = lib.mkOption {
+      type = lib.types.bool;
+      default= false;
+    };
+
+    updateOnStartup = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+    };
+
   };
 
   config =
@@ -62,6 +73,11 @@ in
     in
       (lib.mkIf cfg.enable
         {
+
+          systemd.tmpfiles.rules = [
+            "t /run/pzsocks 0777 nobody nobody -"
+          ];
+
           networking.firewall = firewall;
           users.users.${cfg.user} = {
             isSystemUser = true;
@@ -71,31 +87,58 @@ in
           };
           users.groups.${cfg.group} = {};
 
-          systemd.sockets.project-zomboid-server = {
-            bindsTo = [ "project-zomboid-server.service" ];
+          systemd.sockets."project-zomboid-server@" = {
+            bindsTo = [ "project-zomboid-server@%i.service" ];
             socketConfig = {
-              ListenFIFO = "/run/project-zomboid-server.stdin";
+              ListenFIFO = "/run/pzsocks/%i.socket";
               SocketMode = "0660";
-              SocketUser = "pzserver";
-              SocketGroup = "pzserver";
+              SocketUser = cfg.user;
+              SocketGroup = cfg.group;
               RemoveOnStop = true;
               FlushPending = true;
             };
           };
 
-          systemd.services.project-zomboid-server = {
+          systemd.services."project-zomboid-server@" = {
             description = "Project Zomboid Server";
-            after = [ "network.target" ];
             wantedBy = [ "multi-user.target" ];
-
+            requires = [ "project-zomboid-server@%i.socket" ];
+            after = [ "network.target" "project-zomboid-server@%i.socket" ];
             serviceConfig = {
               Type = "simple";
               User = cfg.user;
               Group = cfg.group;
+
               WorkingDirectory = cfg.package.passthru.pzdir;
               ExecStart = "${cfg.package}/bin/pzstart";
+              ExecStop = "echo 'quit' > /run/project-zomboid-server.socket && sleep 30";
+
+              StandardInput = "socket";
+              StandardOutput = "journal";
+              StandardError = "journal";
+
+              # Hardening
+              # CapabilityBoundingSet = [ "" ];
+              # DeviceAllow = [ "" ];
+              # LockPersonality = true;
+              # PrivateDevices = true;
+              # PrivateTmp = true;
+              # PrivateUsers = true;
+              # ProtectClock = true;
+              # ProtectControlGroups = true;
+              # ProtectHome = true;
+              # ProtectHostname = true;
+              # ProtectKernelLogs = true;
+              # ProtectKernelModules = true;
+              # ProtectKernelTunables = true;
+              # ProtectProc = "invisible";
+              # RestrictAddressFamilies = [ "AF_INET" "AF_INET6" ];
+              # RestrictNamespaces = true;
+              # RestrictRealtime = true;
+              # RestrictSUIDSGID = true;
+              # SystemCallArchitectures = "native";
+              # UMask = "0077";
             };
           };
-        }
-      );
+        });
 }

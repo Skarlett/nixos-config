@@ -6,10 +6,8 @@ self-lib.withSystem (system:
   in
   (self-lib.recursiveMerge [
     {
-
       packages.mkci = pkgs.callPackage ./mkci.nix {
           inherit self self-lib;
-
           override-workflow = [
             (workflow.mkNixBuildUnfree { name = "pzstart"; })
           ];
@@ -17,12 +15,12 @@ self-lib.withSystem (system:
 
       packages.unallocatedspace-frontend = pkgs.callPackage ./unallocatedspace.dev {
         FQDN = "unallocatedspace.dev";
-        REDIRECT="https://github.com/skarlett";
+        REDIRECT = "https://github.com/skarlett";
       };
 
       packages.airsonic-advanced-war = pkgs.callPackage ./airsonic-advanced.nix {};
+      packages.wgluni-rules = pkgs.callPackage ./wgluni-rules {};
     }
-
     { packages = builtins.removeAttrs (pkgs.callPackage ./pzserver {})
       ["override" "overrideDerivation"];
     }

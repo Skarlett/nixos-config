@@ -6,9 +6,7 @@ let
   {
     lunarix = {
       #
-      # ip add route fd01:1:1::/48
-      #   via fd01:1:1::ff00 dev luni
-      # ip add route
+      # ip route add fd01:1:1::/48 dev luni
       desktop = {
         publicKey = "pZZcZFL6ejkYlcfIXe06AkALIcbTGBtIAjxGT0LfZ1g=";
         allowedIPs = ["fd01:1:a1:1::1/128" "10.51.0.1/32"];

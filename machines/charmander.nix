@@ -1,155 +1,102 @@
 {self, config, pkgs, lib, peers, ...}:
 {
+  common.enable = true;
   remote-access.lunarix = true;
   nixpkgs.config.allowUnfree = true;
 
+  environment.systemPackages = [ pkgs.wireguard-tools ];
   services.airsonic-advanced.enable = true;
   services.airsonic-advanced.openFirewall = true;
 
+  services.gitea.enable = true;
+  services.nginx.enable = true;
+  # services.minecraft-server = {
+  #   enable = true;
+  #   eula = true;
+  #   declarative = true;
+  # };
 
-  # boot.kernelPackages = pkgs.linuxPackages_4_19;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sde";
+  services.rpcbind.enable = true;
+  services.nfs.server = {
+    enable = true;
+    createMountPoints = false;
+    lockdPort = 4001;
+    mountdPort = 4002;
+    statdPort = 4000;
+    exports = ''
+    /export           10.0.0.0/24(r,fsid=0,no_subtree_check)
+    /export/cardinal  10.0.0.0/24(rw,nohide,insecure,no_subtree_check,async) 10.51.0.128/32(rw,nohide,insecure,no_subtree_check,async)
+    '';
 
-  networking.firewall.allowedUDPPorts = [ 51820 51821 16261 16262];
+    # ''
+    # /export/music     10.0.0.0/24(rw,nohide,insecure,no_subtree_check,async) 10.51.0.0/24(rw,nohide,insecure,no_subtree_check,async)
+    # '';
+  };
 
-  networking.wg-quick.interfaces.luni = {
-    address = ["fd01:1:a1:1::2" "10.51.0.2"];
+  # systemd.tmpfiles.rules = [
+  #   "d /export 0111 nobody nogroup -"
+  #   "d /export/cardinal 0550 lunarix cardinaladm -"
+
+  #   "d /export/music 0051 nobody musicmod -"
+  #   "d /export/music/lunarix 0511 lunarix musicmod -"
+  #   "d /export/music/alex 0511 cardinal musicmod -"
+
+  #   "t /run/pzsocks 0777 nobody nobody -"
+  #   "t /run/minecraft-socks 0777 nobody nobody -"
+
+
+  #   "d /srv 0551 nobody nogroup -"
+  #   "L /var/lib/minecraft-server /srv/minecraft-server"
+  # ];
+
+  networking.firewall.allowedUDPPorts = [
+    51820
+
+    16261 16262
+
+    111 2049 4000 4001 4002 20048
+    # 53
+  ];
+
+  networking.firewall.interfaces.luni.allowedUDPPorts = [
+    # Project zomboid
+    16261 16262
+
+    # NFS
+    111 2049 4000 4001 4002 20048
+  ];
+
+  networking.firewall.allowedTCPPorts = [
+    16261 16262 2232
+    80 3000 443 22
+
+    111 2049 4000 4001 4002 20048
+    # 53
+  ];
+
+  networking.wireguard.interfaces.luni = {
+    ips = [
+      "fd01:1:a1:1::2"
+      "10.51.0.2"
+      # "10.51.1.2"
+    ];
+
     privateKeyFile = "/var/lib/wireguard/privatekey";
     listenPort = 51820;
     peers = peers.gateways;
-    # postUp = ''
-    #   ip add route fd01:1:a1::/48 dev luni
-    #   ip add route 10.51.0.0/24 dev luni
-    # '';
-
-    # postDown = ''
-    #   ip route del fd01:1:a1::/48 dev luni
-    #   ip route del 10.51.0.0/24 dev luni
-    #   '';
+    postSetup = ''
+      ${pkgs.iproute2}/bin/ip route add fd01:1:a1::/48 dev luni
+      ${pkgs.iproute2}/bin/ip route add 10.51.0.0/24 dev luni
+    '';
+    postShutdown = ''
+      ${pkgs.iproute2}/bin/ip route del fd01:1:a1::/48 dev luni
+      ${pkgs.iproute2}/bin/ip route del 10.51.0.0/24 dev luni
+    '';
   };
 
   boot.kernel.sysctl."net.ipv6.conf.luna.ip_forward" = 1;
   boot.kernel.sysctl."net.ipv4.conf.luna.ip_forward" = 1;
 
-
-  # virtualisation.oci-containers.backend = "podman";
-  # virtualisation.oci-containers.containers = {
-  #   container-name = {
-  #     image = "container-image";
-  #     autoStart = true;
-  #     ports = [ "127.0.0.1:1234:1234" ];
-  #   };
-  # };
-
-  # networking.wg-quick.interfaces.luni = {
-  #   address = peers.peers.lunarix.charmander.allowedIPs;
-  #   privateKeyFile = "/var/lib/wireguard/privatekey";
-  #   listenPort = 51821;
-  #   peers = peers.gateways;
-  # };
-
-  # networking.luninet.enable = true;
-  # networking.luninet.suffix = "::2";
-  # networking.luninet.peers = peers.gateways ++ [
-  #   peers.peers.lunarix.desktop
-  # ];
- # https://superuser.com/questions/1776851/routing-wireguard-peers-traffic-via-another-peer
-  # systemd.network = {
-  #   enable = true;
-  #   netdevs = {
-  #     "10-luni" = {
-  #       netdevConfig = {
-  #         Kind = "wireguard";
-  #         Name = "luni";
-  #         MTUBytes = "1400";
-  #       };
-
-  #       # See also man systemd.netdev (also contains info on the permissions of the key files)
-  #       wireguardConfig = {
-  #         PrivateKeyFile = "/var/lib/wireguard/privatekey";
-  #         ListenPort = 51820;
-  #       };
-
-  #       wireguardPeers = [
-  #           { wireguardPeerConfig =
-  #             {
-  #               AllowedIPs = peers.peers.lunarix.cardinal.allowedIPs;
-  #               PublicKey =  peers.peers.lunarix.cardinal.publicKey;
-  #               Endpoint = "unallocatedspace.dev:51820";
-  #             };
-  #           }
-  #         ];
-  #     };
-  #   };
-
-  #   networks.luni = {
-  #     # See also man systemd.network
-  #     matchConfig.Name = "luni";
-  #     routes = [
-  #       {
-  #         routeConfig = {
-  #           Destination = "fd01:1:a1::/48";
-  #           Gateway = "luni";
-  #         };
-  #        }
-  #       {
-  #         routeConfig = {
-  #           Destination = "10.51.0.0/24";
-  #           Gateway = "luni";
-  #         };
-  #       }
-  #     ];
-  #     # IP addresses the client interface will have
-  #     address = [
-  #       "fd01:1:a1:1::2"
-  #       "10.51.0.2"
-  #     ];
-  #     DHCP = "no";
-  #     # dns = [ "fc00::53" ];
-  #     # ntp = [ "fc00::123" ];
-  #     gateway = [
-  #       # "fd01:1:a1:ff00"
-  #       # "10.51.0.128"
-  #     ];
-
-  #     networkConfig = {
-  #       IPv6AcceptRA = false;
-  #     };
-
-  #     # linkConfig.RequiredForOnline = "routable";
-  #   };
-  # };
-
-  environment.systemPackages = [ pkgs.wireguard-tools ];
-
-  # networking.wg-quick.interfaces.luni = {
-  #   # postSetup = ''
-  #   #   ip -6 rule add fwmark 0x123 lookup 200
-  #   #   ip -6 rule add from fd01:1:a1::/48 lookup 200
-  #   #   ip -6 route add fd01:1:a1::/48 dev luni table 200
-  #   # '';
-
-  #   # postShutdown = ''
-  #   #   ip -6 route flush table 200
-  #   #   ip -6 rule del from fd01:1:a1::/48 lookup 200
-  #   #   ip -6 route del fd01:1:a1::/48 dev luni table 200
-  #   # '';
-
-  #   # table = "200";
-  #   # fwMark = "0x123";
-
-  #   address = [ "fd01:1:a1:1::2" ];
-  #   privateKeyFile = "/var/lib/wireguard/privatekey";
-  #   listenPort = 51820;
-  #   peers =  peers.gateways ++ [
-  #     peers.peers.lunarix.desktop
-  #   ];
-  # };
-
-  boot.kernel.sysctl."net.ipv6.conf.all.ip_forward" = 1;
-
-  common.enable = true;
   services.hydra = {
     enable = true;
     hydraURL = "http://localhost:3000";
@@ -158,14 +105,10 @@
     useSubstitutes = true;
   };
 
-
-  networking.firewall.allowedTCPPorts = [ 80 3000 443 16261 16262 2232 ];
-
   gaming.project-zomboid-server.enable = true;
   gaming.project-zomboid-server.netfaces = ["luni" "enp4s0f0"];
-
-
-
   networking.hostName = "charmander";
-  services.openssh.enable = true;
+
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sde";
 }

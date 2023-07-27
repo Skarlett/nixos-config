@@ -8,9 +8,6 @@
   imports = [
     self.inputs.nix-ld.nixosModules.nix-ld
   ];
-  # nixpkgs.overlays = with inputs.chaotic; [
-  #   inputs.chaotic.overlays.default
-  # ];
 
   common.enable = true;
   networking.hostName = "flagship";
@@ -27,11 +24,6 @@
   chaotic.steam.extraCompatPackages = [ pkgs.proton-ge-custom ];
   services.arl-scrape.enable = true;
 
-  # networking.luninet.enable = true;
-  # networking.luninet.privateKeyFile = "/etc/nixos/keys/wireguard/lunarix.pem";
-  # networking.luninet.suffix = "::1";
-  # networking.luninet.peers = peers.gateways;
-
   nix.settings.trusted-users = [ "lunarix" ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
@@ -40,7 +32,6 @@
     driSupport32Bit = true;
   };
 
-
   networking.firewall.allowedUDPPorts = [ 51820 51821 ];
   networking.wg-quick.interfaces.luni = {
     address = ["fd01:1:a1:1::1" "10.51.0.1"];
@@ -48,14 +39,6 @@
     listenPort = 51820;
     peers = peers.gateways;
   };
-
-  # networking.wg-quick.interfaces.luni4 = {
-  #   address = ["10.51.0.1"];
-  #   privateKeyFile = "/etc/nixos/keys/wireguard/4/flagship.pem";
-  #   listenPort = 51821;
-  #   peers = with peers; prot-ip ipv4 gateways;
-  # };
-
 
   #security.pam.enableFscrypt
   # security.pam.enableEcryptfs = mkEnableOption
@@ -110,30 +93,11 @@
     nixfmt
     noisetorch
     self.inputs.deploy.packages."x86_64-linux".default
+    nfs-utils
   ];
 
   services.printing.enable = true;
   services.openssh.enable = true;
-
-  # services.syncthing = {
-  #   enable = true;
-  #   user = "lunarix";
-  #   dataDir = "/home/lunarix/Sync";
-  #   configDir = "/home/lunarix/.config/syncthing";
-
-  #   overrideDevices = false;
-  #   overrideFolders = false;
-  #   devices = {
-  #     # "coggie" = { id = "DEVICE-ID-GOES-HERE"; };
-  #   };
-
-  #   folders = {
-  #     "Sync" = {
-  #       path = "/home/lunarix/Sync";
-  #       devices = [  ];
-  #     };
-  #   };
-  # };
 
   services.tor.enable = true;
   services.tor.client.enable = true;
@@ -144,7 +108,7 @@
 
   # Forward .onion requests to Tor
   services.privoxy.settings.forward-socks5t = "/ 127.0.0.1:9050 .";
-  system.stateVersion = "22.11";
+  system.stateVersion = "22.05";
 }
 
 

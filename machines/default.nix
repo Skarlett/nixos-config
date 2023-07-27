@@ -1,4 +1,4 @@
-{ config, lib, pkgs, inputs, system, specialArgs, ... }:
+{ inputs, system, specialArgs, ... }:
 
 let
   mods = [
@@ -19,12 +19,13 @@ let
 in
 {
   flagship = inputs.nixpkgs.lib.nixosSystem {
-    inherit system specialArgs;
+    inherit specialArgs;
+    system = "x86_64-linux";
     modules = [
       ./flagship.nix
       ./flagship.hardware.nix
       ../modules/lightbuild.nix
-     {
+      {
         home-manager.users.lunarix = import ../home-manager/flagship.nix;
         home-manager.useGlobalPkgs = true;
         home-manager.useUserPackages = true;
@@ -34,7 +35,8 @@ in
   };
 
   charmander = inputs.nixpkgs.lib.nixosSystem {
-    inherit system specialArgs;
+    inherit specialArgs;
+    system = "x86_64-linux";
     modules =
       [
         ../modules/accessible.nix
@@ -60,7 +62,8 @@ in
   # };
 
   live-iso = inputs.nixpkgs.lib.nixosSystem {
-    inherit system specialArgs;
+    inherit specialArgs;
+    system = "x86_64-linux";
     check = false;
     modules = [
       ../modules/accessible.nix
@@ -78,13 +81,13 @@ in
       "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
       ./coggie.nix
       ./coggie.hardware.nix
-      { environment.systemPackages = with pkgs; [
+      ({pkgs, ...}: { environment.systemPackages = with pkgs; [
           gnufdisk
           util-linux
           parted
           nfs-utils
         ];
-      }
+      })
     ] ++ mods;
   };
 }

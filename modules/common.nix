@@ -8,7 +8,6 @@ in
     time.timeZone = "America/Chicago";
     i18n.defaultLocale = "en_US.utf8";
 
-
     networking.firewall.enable = true;
     networking.firewall.allowedTCPPorts = [ 22 ];
     networking.firewall.allowedUDPPorts = [ 22 ];
@@ -26,6 +25,7 @@ in
       git
       binutils
       coreutils
+      nfs-utils
     ];
 
     users.users.root.shell = pkgs.fish;
