@@ -4,6 +4,7 @@ rec {
     # Pinned
     coggiebot.url = "github:skarlett/coggie-bot/d040dfe03f612120263386f1f1eda3116c4fb235";
 
+
     # Rolling
     nixos-generators.url = "github:nix-community/nixos-generators";
     nixos-generators.inputs.nixpkgs.follows = "nixpkgs";
@@ -11,8 +12,7 @@ rec {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
     raccoon.url = "github:nixos/nixpkgs/nixos-22.11";
     nur.url = "github:nix-community/NUR";
-    nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
-    # nix-doom-emacs.inputs.nixpkgs.follows = "raccoon";
+
     nix-alien.url = "github:thiagokokada/nix-alien";
     nix-ld.url = "github:mic92/nix-ld/main";
     hm.url = "github:nix-community/home-manager/release-23.05";
@@ -22,9 +22,16 @@ rec {
     coggiebot.inputs.nixpkgs.follows = "nixpkgs-unstable";
     utils.url = "github:numtide/flake-utils";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+
+    dns = {
+      url = "github:kirelagin/dns.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # remove eventually
+    nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
   };
-
 
   outputs = {self, ...}@inputs:
   let
@@ -45,7 +52,7 @@ rec {
       workflow = callPackage ./lib/workflow {};
     };
   in
-    {
+    rec {
       inherit (import ./packages { inherit self-lib self inputs; lib=pkgs.lib;}) packages;
       inherit peers;
 
@@ -61,6 +68,12 @@ rec {
         unallocatedspace = import ./modules/unallocatedspace.nix;
         airsonic-advanced = import ./modules/airsonic-advanced.nix;
       };
+
+      hydraJobs =
+        let
+          inherit (packages) x86_64-linux;
+        in
+          { packages = x86_64-linux; };
 
       # deploy-rs node configuration
       deploy.nodes = {
