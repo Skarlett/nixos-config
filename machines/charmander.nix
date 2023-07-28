@@ -5,33 +5,34 @@
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = [ pkgs.wireguard-tools ];
-  services.airsonic-advanced.enable = true;
-  services.airsonic-advanced.openFirewall = true;
+  # services.airsonic-advanced.enable = true;
+  # services.airsonic-advanced.openFirewall = true;
 
-  services.gitea.enable = true;
-  services.nginx.enable = true;
+  # services.gitea.enable = true;
+  # services.nginx.enable = true;
   # services.minecraft-server = {
   #   enable = true;
   #   eula = true;
   #   declarative = true;
   # };
 
-  services.rpcbind.enable = true;
-  services.nfs.server = {
-    enable = true;
-    createMountPoints = false;
-    lockdPort = 4001;
-    mountdPort = 4002;
-    statdPort = 4000;
-    exports = ''
-    /export           10.0.0.0/24(r,fsid=0,no_subtree_check)
-    /export/cardinal  10.0.0.0/24(rw,nohide,insecure,no_subtree_check,async) 10.51.0.128/32(rw,nohide,insecure,no_subtree_check,async)
-    '';
+  # services.rpcbind.enable = true;
+  # services.nfs.server = {
+  #   enable = true;
+  #   createMountPoints = false;
+  #   lockdPort = 4001;
+  #   mountdPort = 4002;
+  #   statdPort = 4000;
+  #   exports = ''
+  #   /export           10.0.0.0/24(r,fsid=0,no_subtree_check)
+  #   /export/cardinal  10.0.0.0/24(rw,nohide,insecure,no_subtree_check,async) 10.51.0.128/32(rw,nohide,insecure,no_subtree_check,async)
+  #   '';
 
-    # ''
-    # /export/music     10.0.0.0/24(rw,nohide,insecure,no_subtree_check,async) 10.51.0.0/24(rw,nohide,insecure,no_subtree_check,async)
-    # '';
-  };
+  #   # ''
+  #   # /export/music     10.0.0.0/24(rw,nohide,insecure,no_subtree_check,async) 10.51.0.0/24(rw,nohide,insecure,no_subtree_check,async)
+  #   # '';
+  # }
+  # ;
 
   # systemd.tmpfiles.rules = [
   #   "d /export 0111 nobody nogroup -"

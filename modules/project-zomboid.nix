@@ -27,11 +27,12 @@ in
       description = "Port to run the server on";
     };
 
-    netfaces = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      example = ["eth0"];
-      default = [];
-    };
+    # netfaces = lib.mkOption {
+    #   type = lib.types.listOf lib.types.str;
+    #   example = ["eth0"];
+    #   default = [];
+    # }
+    # ;
 
     user = lib.mkOption {
       type = lib.types.str;
@@ -48,37 +49,25 @@ in
       description = "List of servers to run";
     };
 
-    declarative = lib.mkOption {
-      type = lib.types.bool;
-      default= false;
-    };
+    # declarative = lib.mkOption {
+    #   type = lib.types.bool;
+    #   default= false;
+    # };
 
-    updateOnStartup = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-    };
-
+    # updateOnStartup = lib.mkOption {
+    #   type = lib.types.bool;
+    #   default = true;
+    # };
   };
 
   config =
-    let
-      firewall =
-        if cfg.netfaces == []
-        then { allowedUDPPorts = [ cfg.directPort cfg.negotiationPort]; }
-        else { interfaces = builtins.foldl'
-          (s: c: s // {
-            ${c}.allowedUDPPorts = [ cfg.directPort cfg.negotiationPort ];
-          }) {} cfg.netfaces;
-      };
-    in
       (lib.mkIf cfg.enable
         {
 
-          systemd.tmpfiles.rules = [
-            "t /run/pzsocks 0777 nobody nobody -"
-          ];
+          # systemd.tmpfiles.rules = [
+          #   "t /run/pzsocks 0777 nobody nobody - - - - /run/pz.socket"
+          # ];
 
-          networking.firewall = firewall;
           users.users.${cfg.user} = {
             isSystemUser = true;
             group = cfg.group;
@@ -87,10 +76,10 @@ in
           };
           users.groups.${cfg.group} = {};
 
-          systemd.sockets."project-zomboid-server@" = {
-            bindsTo = [ "project-zomboid-server@%i.service" ];
+          systemd.sockets."project-zomboid-server" = {
+            bindsTo = [ "project-zomboid-server.service" ];
             socketConfig = {
-              ListenFIFO = "/run/pzsocks/%i.socket";
+              ListenFIFO = "/run/pz.socket";
               SocketMode = "0660";
               SocketUser = cfg.user;
               SocketGroup = cfg.group;
@@ -99,11 +88,11 @@ in
             };
           };
 
-          systemd.services."project-zomboid-server@" = {
+          systemd.services."project-zomboid-server" = {
             description = "Project Zomboid Server";
             wantedBy = [ "multi-user.target" ];
-            requires = [ "project-zomboid-server@%i.socket" ];
-            after = [ "network.target" "project-zomboid-server@%i.socket" ];
+            requires = [ "project-zomboid-server.socket" ];
+            after = [ "network.target" "project-zomboid-server.socket" ];
             serviceConfig = {
               Type = "simple";
               User = cfg.user;
@@ -111,7 +100,7 @@ in
 
               WorkingDirectory = cfg.package.passthru.pzdir;
               ExecStart = "${cfg.package}/bin/pzstart";
-              ExecStop = "echo 'quit' > /run/project-zomboid-server.socket && sleep 30";
+              ExecStop = "echo 'quit' > /run/pz.socket && sleep 30";
 
               StandardInput = "socket";
               StandardOutput = "journal";

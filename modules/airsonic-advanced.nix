@@ -70,12 +70,6 @@ in
       default =
         "${pkgs.self.airsonic-advanced-war.outPath}/webapps/airsonic.war";
     };
-
-    useTomcat = mkOption {
-      type = types.bool;
-      default = true;
-      description = "Use Tomcat instead of Jetty";
-    };
   };
 
   config = mkIf cfg.enable {
@@ -89,29 +83,13 @@ in
         listenAddress = cfg.listenAddress;
     };
 
-    users.users.airsonic.extraGroups = [ "musiclib" ];
-
-    # users.users.airsonic = {
-    #   isSystemUser = true;
-    #   createHome = true;
-    #   home = cfg.home;
-    #   name = cfg.user;
-    #   group = cfg.group;
-    # };
-
-    services.tomcat.serverXml = ''
-      <Connector port="${toString cfg.port}"
-                 protocol="HTTP/1.1"
-                 connectionTimeout="20000"
-                 redirectPort="8443" />
-    '';
-
-    services.tomcat.enable = cfg.useTomcat;
-    services.tomcat.jdk = pkgs.openjdk11;
-    services.tomcat.javaOpts = cfg.jvmOptions ++ cfg.jvmExtraOptions;
-    services.tomcat.webapps = [
-        cfg.war
-    ];
+    users.users.airsonic = {
+      isSystemUser = true;
+      createHome = true;
+      home = cfg.home;
+      name = cfg.user;
+      group = cfg.group;
+    };
 
     networking.firewall.allowedTCPPorts = [ 8080 ];
   };

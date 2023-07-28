@@ -9,7 +9,7 @@ let
       ../modules/arl-scrape.nix
       ../modules/unallocatedspace.nix
       ../modules/project-zomboid.nix
-      ../modules/airsonic-advanced.nix
+      # ../modules/airsonic-advanced.nix
       inputs.coggiebot.nixosModules.coggiebot
       inputs.chaotic.nixosModules.default
       inputs.agenix.nixosModules.default
