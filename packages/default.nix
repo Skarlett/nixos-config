@@ -19,7 +19,7 @@ self-lib.withSystem (system:
       };
 
       packages.airsonic-advanced-war = pkgs.callPackage ./airsonic-advanced.nix {};
-      packages.wgluni-rules = pkgs.callPackage ./wgluni-rules {};
+      # packages.wgluni-rules = pkgs.callPackage ./wgluni-rules {};
     }
     { packages = builtins.removeAttrs (pkgs.callPackage ./pzserver {})
       ["override" "overrideDerivation"];

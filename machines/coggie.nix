@@ -3,7 +3,7 @@
   boot.kernelPackages = pkgs.linuxPackages_rpi3;
 
   common.enable = true;
-  common.headless = true;
+  # common.headless = true;
   remote-access.lunarix = true;
 
   services.lvm.enable = false;

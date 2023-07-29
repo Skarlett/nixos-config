@@ -90,6 +90,15 @@ let
     persistentKeepalive = 25;
   };
 
+  jeff.desktop = {
+    publicKey = "NdVu+FGhasvUQqCartAXe7B1MinlIhspVqvKxFEoKi8=";
+    allowedIPs = [
+      "fd01:1:a1:69::1"
+      "10.51.0.16"
+    ];
+    persistentKeepalive = 25;
+  };
+
   k10.desktop = {
     publicKey = "bVMpoVy4nSiCX5skVtD3oOFaL0DJKMvxNB5XMIpjbg4=";
     allowedIPs = ["fd01:1:a1:14f::1/128" "10.51.0.15/32"];
@@ -112,6 +121,7 @@ let
     heccin.desktop
     simcra.desktop
     k10.desktop
+    jeff.desktop
   ];
 
 in

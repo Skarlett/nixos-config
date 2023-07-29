@@ -107,7 +107,7 @@
   };
 
   gaming.project-zomboid-server.enable = true;
-  gaming.project-zomboid-server.netfaces = ["luni" "enp4s0f0"];
+  # gaming.project-zomboid-server.netfaces = ["luni" "enp4s0f0"];
   networking.hostName = "charmander";
 
   boot.loader.grub.enable = true;
