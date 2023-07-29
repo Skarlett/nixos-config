@@ -1,14 +1,10 @@
-{ inputs, self, config, pkgs, lib, peers, ... }:
+{ config, pkgs, lib, ... }:
 # let
    # dark_ghidra = pkgs.ghidra.overrideAttrs (old: {
    #   patches = (old.patches or []) ++ [];
    # });
 # in
 {
-  imports = [
-    self.inputs.nix-ld.nixosModules.nix-ld
-  ];
-
   common.enable = true;
   networking.hostName = "flagship";
 
@@ -37,7 +33,7 @@
     address = ["fd01:1:a1:1::1" "10.51.0.1"];
     privateKeyFile = "/etc/nixos/keys/wireguard/6/lunarix.pem";
     listenPort = 51820;
-    peers = peers.gateways;
+    peers = config.luninet.gateways;
   };
 
   #security.pam.enableFscrypt

@@ -1,28 +1,39 @@
-{ self, self-lib, lib, inputs }:
-self-lib.withSystem (system:
-  let
-    inherit (self-lib) workflow;
-    pkgs = import inputs.nixpkgs { inherit system; };
-  in
-  (self-lib.recursiveMerge [
-    {
-      packages.mkci = pkgs.callPackage ./mkci.nix {
-          inherit self self-lib;
-          override-workflow = [
-            (workflow.mkNixBuildUnfree { name = "pzstart"; })
-          ];
-      };
+{ config, self', inputs', pkgs, system, ... }:
 
-      packages.unallocatedspace-frontend = pkgs.callPackage ./unallocatedspace.dev {
-        FQDN = "unallocatedspace.dev";
-        REDIRECT = "https://github.com/skarlett";
-      };
+rec  {
+    # mkci = pkgs.callPackage ./mkci.nix {
+    #   self=self';
+    #   # override-workflow = [
+    #   #   (workflow.mkNixBuildUnfree { name = "pzstart"; })
+    #   # ];
+    # };
+    default = self'.packages.activate;
+    # unallocatedspace-frontend = pkgs.callPackage ./unallocatedspace.dev {
+    #   FQDN = "unallocatedspace.dev";
+    #   REDIRECT = "https://github.com/skarlett";
+    # };
 
-      packages.airsonic-advanced-war = pkgs.callPackage ./airsonic-advanced.nix {};
-      packages.wgluni-rules = pkgs.callPackage ./wgluni-rules {};
-    }
-    { packages = builtins.removeAttrs (pkgs.callPackage ./pzserver {})
-      ["override" "overrideDerivation"];
-    }
-  ])
-)
+    # airsonic-advanced-war = pkgs.callPackage ./airsonic-advanced.nix {};
+
+    # wgluni-rules = pkgs.callPackage ./wgluni-rules {};
+
+    # pzupdate = pkgs.callPackage ./pzserver/pzupdate.nix {
+    #   pzdir = "/srv/planetz";
+    # };
+
+    # pzstart =
+    # let
+    #   conf-builder = src: name: pkgs.stdenv.mkDerivation {
+    #     inherit name src;
+    #     phases = "installPhase";
+    #     installPhase = ''
+    #     mkdir -p $out
+    #     cp -r $src $out
+    #     '';
+    #   };
+    #   pzconfig = conf-builder ./servertest "servertest";
+    # in
+    # {
+    #   inherit pzconfig pzupdate;
+    # };
+}
