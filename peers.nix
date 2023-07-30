@@ -1,4 +1,4 @@
-{config, lib, ...}:
+{config, lib, pkgs, ...}:
 let
   # Entire network: fd01:1:1::/48
   peers =
@@ -75,7 +75,7 @@ let
     persistentKeepalive = 25;
   };
 
-   conic.desktop = {
+  conic.desktop = {
     publicKey = "tuBigIORaghdhaEZd+h9ELeZWthQtEjEewaBcIXb5y8=";
     allowedIPs = ["fd01:1:a1:23e::1/128" "10.51.0.14/32"];
     persistentKeepalive = 25;
@@ -142,14 +142,14 @@ with lib;
     };
 
      extraPostSetup = mkOption {
-       doc = "Extra commands to run after setting up the wireguard interface. extends
-        `config.networking.wireguard.interfaces.luni.postSetup`";
+       # doc = "Extra commands to run after setting up the wireguard interface. extends
+       # `config.networking.wireguard.interfaces.luni.postSetup`";
        default = "";
      };
 
      extraPostShutdown = mkOption {
-       doc = "Extra commands to run after setting up the wireguard interface. extends
-        `config.networking.wireguard.interfaces.luni.postShutdown`";
+       # doc = "Extra commands to run after setting up the wireguard interface. extends
+       #  `config.networking.wireguard.interfaces.luni.postShutdown`";
        default = "";
      };
 
@@ -184,7 +184,7 @@ with lib;
             ${pkgs.iptables}/bin/iptables -A FORWARD -i luni -j ACCEPT
             ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o luni -j MASQUERADE
 
-            ${extraPostSetup}
+            ${cfg.extraPostSetup}
         '';
         postShutdown = ''
             ${pkgs.iptables}/bin/ip6tables -D FORWARD -i luni -j ACCEPT
@@ -192,7 +192,7 @@ with lib;
             ${pkgs.iptables}/bin/iptables -D FORWARD -i luni -j ACCEPT
             ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o luni -j MASQUERADE
 
-            ${extraPostShutdown}
+            ${cfg.extraPostShutdown}
         '';
         peers = with peers; (users ++ gateways);
         ips = ["fd01:1:a1::ff00/48" "10.51.0.128/24"];

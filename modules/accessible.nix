@@ -1,4 +1,4 @@
-{config, lib, pkgs, keys, ...}:
+{config, lib, pkgs, ...}:
 let
     cfg = config.remote-access;
 in

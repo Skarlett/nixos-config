@@ -11,7 +11,7 @@ in
     enable = lib.mkEnableOption "Enable Project Zomboid";
 
     package = lib.mkOption {
-      default = pkgs.self.pzstart;
+      default = pkgs.pzstart;
       description = "Package to use for Project Zomboid";
     };
 
@@ -75,6 +75,46 @@ in
             createHome = true;
           };
           users.groups.${cfg.group} = {};
+
+          # systemd.timers."project-zomboid-server-autoreboot" = {
+          #   description = "Project Zomboid Server";
+          #   wantedBy = [ "timers.target" ];
+          #   after = [
+          #     "network.target"
+          #     "project-zomboid-server.socket"
+          #     "project-zomboid-server.service"
+          #   ];
+
+          #   timerConfig = {
+          #     OnBootSec = "4hour";
+          #     OnUnitActiveSec = "4hour";
+          #     Unit = "project-zomboid-server-autoreboot.service";
+          #     Persistent=true;
+          #   };
+          # };
+
+          # systemd.services."project-zomboid-server-reboot" = {
+          #   description = "Project Zomboid Server";
+          #   wantedBy = [ "multi-user.target" ];
+          #   requires = [
+          #     "project-zomboid-server.socket"
+          #     "project-zomboid-server.service"
+          #   ];
+
+          #   after = [
+          #     "project-zomboid-server.socket"
+          #     "project-zomboid-server.service"
+          #   ];
+
+          #   serviceConfig = {
+          #     Type = "simple";
+          #     User = cfg.user;
+          #     Group = cfg.group;
+
+          #     WorkingDirectory = cfg.package.passthru.pzdir;
+          #     ExecStart = "echo 'quit' > /run/pz.socket && sleep 30";
+          #   };
+          # };
 
           systemd.sockets."project-zomboid-server" = {
             bindsTo = [ "project-zomboid-server.service" ];

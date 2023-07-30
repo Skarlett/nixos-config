@@ -1,13 +1,12 @@
 { config, self', inputs', pkgs, system, ... }:
-
-rec  {
+rec {
     # mkci = pkgs.callPackage ./mkci.nix {
     #   self=self';
     #   # override-workflow = [
     #   #   (workflow.mkNixBuildUnfree { name = "pzstart"; })
     #   # ];
     # };
-    default = self'.packages.activate;
+    # default = self'.packages.activate;
     # unallocatedspace-frontend = pkgs.callPackage ./unallocatedspace.dev {
     #   FQDN = "unallocatedspace.dev";
     #   REDIRECT = "https://github.com/skarlett";
@@ -17,9 +16,6 @@ rec  {
 
     # wgluni-rules = pkgs.callPackage ./wgluni-rules {};
 
-    # pzupdate = pkgs.callPackage ./pzserver/pzupdate.nix {
-    #   pzdir = "/srv/planetz";
-    # };
 
     # pzstart =
     # let
@@ -32,8 +28,7 @@ rec  {
     #     '';
     #   };
     #   pzconfig = conf-builder ./servertest "servertest";
-    # in
-    # {
+    # in {
     #   inherit pzconfig pzupdate;
     # };
 }

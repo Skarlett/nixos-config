@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ inputs, config, pkgs, lib, ... }:
 # let
    # dark_ghidra = pkgs.ghidra.overrideAttrs (old: {
    #   patches = (old.patches or []) ++ [];
@@ -7,6 +7,10 @@
 {
   common.enable = true;
   networking.hostName = "flagship";
+
+  # home-manager.users.lunarix = import ../home-manager/flagship.nix;
+  # home-manager.useGlobalPkgs = true;
+  # home-manager.useUserPackages = true;
 
   # Enable cap_sys_resource for noisetorch.
   security.wrappers.noisetorch = {
@@ -104,7 +108,7 @@
 
   # Forward .onion requests to Tor
   services.privoxy.settings.forward-socks5t = "/ 127.0.0.1:9050 .";
-  system.stateVersion = "22.05";
+  # system.stateVersion = "22.05";
 }
 
 
