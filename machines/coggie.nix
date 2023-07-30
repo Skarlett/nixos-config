@@ -1,13 +1,14 @@
-{ peers, pkgs, config, lib, ... }:
+{ pkgs, config, lib, ... }:
 {
   boot.kernelPackages = pkgs.linuxPackages_rpi3;
+  # imports = [
+  # ];
 
   common.enable = true;
-  # common.headless = true;
   remote-access.lunarix = true;
 
   services.lvm.enable = false;
-  system.stateVersion = "22.05";
+  system.stateVersion = "23.05";
 
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
@@ -20,7 +21,7 @@
     address = ["fd01:1:a1:1::5" "10.92.0.5"];
     privateKeyFile = "/etc/nixos/keys/wireguard/6/lunarix.pem";
     listenPort = 51820;
-    peers = peers.gateways;
+    peers = config.luninet.gateways;
   };
 
   services.journald.extraConfig = ''

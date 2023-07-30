@@ -1,16 +1,19 @@
-{ inputs, self, config, pkgs, lib, peers, ... }:
+{ self, inputs, config, pkgs, lib, ... }:
 # let
    # dark_ghidra = pkgs.ghidra.overrideAttrs (old: {
    #   patches = (old.patches or []) ++ [];
    # });
 # in
 {
-  imports = [
-    self.inputs.nix-ld.nixosModules.nix-ld
-  ];
-
   common.enable = true;
   networking.hostName = "flagship";
+
+  home-manager.users.lunarix = import ../home-manager/flagship.nix;
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.extraSpecialArgs = {
+    inherit self inputs;
+  };
 
   # Enable cap_sys_resource for noisetorch.
   security.wrappers.noisetorch = {
@@ -37,7 +40,7 @@
     address = ["fd01:1:a1:1::1" "10.51.0.1"];
     privateKeyFile = "/etc/nixos/keys/wireguard/6/lunarix.pem";
     listenPort = 51820;
-    peers = peers.gateways;
+    peers = config.luninet.gateways;
   };
 
   #security.pam.enableFscrypt
@@ -92,7 +95,7 @@
     file
     nixfmt
     noisetorch
-    self.inputs.deploy.packages."x86_64-linux".default
+    inputs.deploy.packages."x86_64-linux".default
     nfs-utils
   ];
 
@@ -108,7 +111,7 @@
 
   # Forward .onion requests to Tor
   services.privoxy.settings.forward-socks5t = "/ 127.0.0.1:9050 .";
-  system.stateVersion = "22.05";
+  # system.stateVersion = "22.05";
 }
 
 

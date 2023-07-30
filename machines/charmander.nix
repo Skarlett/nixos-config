@@ -1,4 +1,4 @@
-{self, config, pkgs, lib, peers, ...}:
+{config, pkgs, lib, ...}:
 {
   common.enable = true;
   remote-access.lunarix = true;
@@ -84,7 +84,7 @@
 
     privateKeyFile = "/var/lib/wireguard/privatekey";
     listenPort = 51820;
-    peers = peers.gateways;
+    peers = config.luninet.gateways;
     postSetup = ''
       ${pkgs.iproute2}/bin/ip route add fd01:1:a1::/48 dev luni
       ${pkgs.iproute2}/bin/ip route add 10.51.0.0/24 dev luni
@@ -107,9 +107,11 @@
   };
 
   gaming.project-zomboid-server.enable = true;
-  # gaming.project-zomboid-server.netfaces = ["luni" "enp4s0f0"];
+
   networking.hostName = "charmander";
 
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/sde";
+
+  system.stateVersion = "23.05";
 }

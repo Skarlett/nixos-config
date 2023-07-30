@@ -1,7 +1,7 @@
 {config, lib, pkgs, ...}:
 {
     programs.vscode = {
-        package = pkgs.unstable.vscode;
+        package = pkgs.vscode;
         enable = true;
         keybindings = builtins.fromJSON (builtins.readFile ./keybindings.json);
         extensions =
@@ -24,7 +24,7 @@
             bodil.file-browser
         ])
         ++
-        (with pkgs.unstable.vscode-extensions; [
+        (with pkgs.vscode-extensions; [
             vadimcn.vscode-lldb
             kahole.magit
             # ms-vscode.cpptools

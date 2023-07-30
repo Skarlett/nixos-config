@@ -1,11 +1,9 @@
-{lib, keys }:
+{config, lib, pkgs, ...}:
 let
-
   # Entire network: fd01:1:1::/48
   peers =
   {
     lunarix = {
-      #
       # ip route add fd01:1:1::/48 dev luni
       desktop = {
         publicKey = "pZZcZFL6ejkYlcfIXe06AkALIcbTGBtIAjxGT0LfZ1g=";
@@ -29,7 +27,6 @@ let
         # # dan
     dan.gateway = {
       publicKey = "fANz8f8OOU4Pe95QeZGEBiqnvN35I9n5IvCVEbqZKFo=";
-      # publicKey.v4 = "mqT87yQ0i7dki5pQrUAStRxYLcG9ipvaCbP76mkDhTI=";
       allowedIPs = [
         "fd01:1:a1:ffe::1/128"
         "10.51.0.3/32"
@@ -72,21 +69,15 @@ let
   #   allowedIPs = ["fd01:1:a1:f1::1/64" "fd01:1:a1:1::1/64"];
   # };
 
-  conic.desktop = {
-    publicKey = "tuBigIORaghdhaEZd+h9ELeZWthQtEjEewaBcIXb5y8=";
-    allowedIPs = ["fd01:1:a1:23e::1/128" "10.51.0.14/32"];
-    persistentKeepalive = 25;
-  };
-
   heccin.desktop = {
     publicKey = "D+rNqpJ8RSaflldKRhWb8Q/p7Cox+Y/mLdUJUcjsyTs=";
     allowedIPs = ["fd01:1:a1:23f::1/128" "10.51.0.13/32"];
     persistentKeepalive = 25;
   };
 
-  simcra.desktop = {
-    publicKey = "iKKn0hxQdScrXXkpmIC83Zgo0Y3GexCQ4+Qd/6NryUc=";
-    allowedIPs = ["fd01:1:a1:24f::1/128" "10.51.0.25/32"];
+  conic.desktop = {
+    publicKey = "tuBigIORaghdhaEZd+h9ELeZWthQtEjEewaBcIXb5y8=";
+    allowedIPs = ["fd01:1:a1:23e::1/128" "10.51.0.14/32"];
     persistentKeepalive = 25;
   };
 
@@ -102,6 +93,18 @@ let
   k10.desktop = {
     publicKey = "bVMpoVy4nSiCX5skVtD3oOFaL0DJKMvxNB5XMIpjbg4=";
     allowedIPs = ["fd01:1:a1:14f::1/128" "10.51.0.15/32"];
+    persistentKeepalive = 25;
+  };
+
+  jeff.desktop = {
+    publicKey = "NdVu+FGhasvUQqCartAXe7B1MinlIhspVqvKxFEoKi8=";
+    allowedIPs = ["fd01:1:a1:69::1/128" "10.51.0.16/32"];
+    persistentKeepalive = 25;
+  };
+
+  simcra.desktop = {
+    publicKey = "iKKn0hxQdScrXXkpmIC83Zgo0Y3GexCQ4+Qd/6NryUc=";
+    allowedIPs = ["fd01:1:a1:24f::1/128" "10.51.0.25/32"];
     persistentKeepalive = 25;
   };
 
@@ -124,7 +127,87 @@ let
     jeff.desktop
   ];
 
+  cfg = config.luninet;
 in
+with lib;
 {
-  inherit peers gateways users;
+
+  options.luninet = {
+    enable = mkEnableOption "luninet";
+
+    users = mkOption {
+      # type = types.listOf types.submodule (config.networking.wireguard.peers);
+      default = peers;
+    };
+
+    gateways = mkOption {
+      # type = types.listOf types.submodule (config.networking.wireguard.peers);
+      default = gateways;
+    };
+
+     port = mkOption {
+      type = types.int.port;
+      default = gateways;
+    };
+
+     extraPostSetup = mkOption {
+       # doc = "Extra commands to run after setting up the wireguard interface. extends
+       # `config.networking.wireguard.interfaces.luni.postSetup`";
+       default = "";
+     };
+
+     extraPostShutdown = mkOption {
+       # doc = "Extra commands to run after setting up the wireguard interface. extends
+       #  `config.networking.wireguard.interfaces.luni.postShutdown`";
+       default = "";
+     };
+
+     openFirewall = mkEnableOption "openFirewall";
+
+     externalInterface = mkOption {
+       type = types.str;
+     };
+
+     internalInterfaces = mkOption {
+       type = types.str;
+       default = "luni";
+     };
+  };
+
+  config = mkIf cfg.enable {
+    boot.kernel.sysctl."net.ipv6.conf.luna.ip_forward" = 1;
+    boot.kernel.sysctl."net.ipv4.conf.luna.ip_forward" = 1;
+    networking = {
+      nat.enable = true;
+      nat.externalInterface = "ens3";
+      nat.internalInterfaces = [ "luni" ];
+
+      firewall.allowedUDPPorts = lib.optional cfg.openFirewall [
+        51820
+      ];
+
+      wireguard.interfaces.luni = {
+        postSetup = ''
+            ${pkgs.iptables}/bin/ip6tables -A FORWARD -i luni -j ACCEPT
+            ${pkgs.iptables}/bin/ip6tables -t nat -A POSTROUTING -o luni -j MASQUERADE
+            ${pkgs.iptables}/bin/iptables -A FORWARD -i luni -j ACCEPT
+            ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o luni -j MASQUERADE
+
+            ${cfg.extraPostSetup}
+        '';
+        postShutdown = ''
+            ${pkgs.iptables}/bin/ip6tables -D FORWARD -i luni -j ACCEPT
+            ${pkgs.iptables}/bin/ip6tables -t nat -D POSTROUTING -o luni -j MASQUERADE
+            ${pkgs.iptables}/bin/iptables -D FORWARD -i luni -j ACCEPT
+            ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o luni -j MASQUERADE
+
+            ${cfg.extraPostShutdown}
+        '';
+        peers = with peers; (users ++ gateways);
+        ips = ["fd01:1:a1::ff00/48" "10.51.0.128/24"];
+        listenPort = 51820;
+        privateKeyFile = "/var/lib/wireguard/privatekey";
+      };
+    };
+  };
 }

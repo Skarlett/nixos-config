@@ -1,0 +1,9 @@
+-X wgluni-route-lunarix
+-X wgluni-route-p2p
+-X wgluni-route-clients
+-X wgluni-routes
+-X wgluni-state
+-X wgluni
+-t nat -D POSTROUTING -o luni -j MASQUERADE
+-D FORWARD -i luni -j ACCEPT
+-D INPUT -i luni -j wgluni
