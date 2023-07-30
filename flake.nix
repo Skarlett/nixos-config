@@ -59,6 +59,7 @@ rec {
       packages.pzupdate = pkgs.callPackage ./packages/pzserver/pzupdate.nix {
         pzdir = "/srv/planetz";
       };
+
       packages.pzconfig =
         let
           conf-builder = src: name: pkgs.stdenv.mkDerivation {
@@ -77,17 +78,11 @@ rec {
     };
 
     flake = {
-      lib = {
-        applyOverlay = {system, config}: o:
-          (
-            if (builtins.isFunction (nixpkgs.lib.traceVal o)) then
-              o (inputs // { inherit system config; })
-            else
-              o
-          );
-
-        overlay-args = args@{system, config}: inputs // args;
-      };
+      lib.applyOverlay = {system, config}: o:
+          if (builtins.isFunction o) then
+            o (inputs // { inherit system config; })
+          else
+            o;
 
       nixosModules = {
         common = import ./modules/common.nix;
@@ -108,123 +103,7 @@ rec {
         unallocatedspace = import ./overlays/unallocatedspace.nix;
       };
 
-      nixosConfigurations =
-      let
-        custom-modules = with self.nixosModules; [
-          common
-          remote-access
-          unallocatedspace
-          keys
-          luninet
-          arl-scrape
-          project-zomboid
-          airsonic-advanced
-
-          inputs.nix-ld.nixosModules.nix-ld
-          inputs.coggiebot.nixosModules.coggiebot
-          inputs.chaotic.nixosModules.default
-          inputs.agenix.nixosModules.default
-          inputs.nur.nixosModules.nur
-          inputs.hm.nixosModules.home-manager
-        ];
-      in
-      {
-        flagship = nixpkgs.lib.nixosSystem rec {
-          specialArgs = { inherit inputs; };
-          system = "x86_64-linux";
-          modules = custom-modules ++ [
-            ./machines/flagship.nix
-            ./machines/flagship.hardware.nix
-            ./modules/lightbuild.nix
-            ({lib, ... }:
-            {
-              _module.args.pkgs = lib.mkForce (import inputs.nixpkgs rec {
-                inherit system;
-                config.allowUnfree = true;
-                overlays =
-                  let
-                    functor = (self.lib.applyOverlay { inherit system config; });
-                  in
-                    (map functor [ self.overlays.flagship-custom ])
-                    ++ [
-                      inputs.vscode-extensions.overlays.default
-                      inputs.nix-alien.overlays.default
-                      inputs.nur.overlay
-                      inputs.chaotic.overlays.default
-                    ];
-                });
-              })
-            ];
-          };
-
-        charmander = nixpkgs.lib.nixosSystem
-        rec {
-          system = "x86_64-linux";
-          modules = custom-modules ++ [
-            ./machines/charmander.nix
-            ./machines/charmander.hardware.nix
-
-            ({lib, ... }: {
-              _module.args.pkgs = lib.mkForce (import inputs.nixpkgs rec {
-                inherit system;
-                overlays =
-                  map (self.lib.applyOverlay { inherit system config; }) [
-                    self.overlays.project-zomboid
-                    self.overlays.airsonic-advanced
-                  ];
-                config.allowUnfree = true;
-              });
-            })
-          ];
-        };
-
-        cardinal = nixpkgs.lib.nixosSystem
-          rec {
-            system = "x86_64-linux";
-            modules = custom-modules ++ [
-              ./machines/cardinal.nix
-              ./machines/cardinal.hardware.nix
-
-              ({lib, ... }: {
-                _module.args.pkgs = lib.mkForce (import inputs.nixpkgs rec {
-                  inherit system;
-                  overlays =
-                    map (self.lib.applyOverlay { inherit system config; }) [
-                      self.overlays.unallocatedspace
-                  ];
-                  config.allowUnfree = true;
-                });
-              })
-            ];
-          };
-
-        coggie = nixpkgs.lib.nixosSystem
-          {
-            system = "aarch64-linux";
-
-            modules = custom-modules ++ [
-              ./machines/coggie.nix
-              ./machines/coggie.hardware.nix
-              "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
-              "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-            ];
-          };
-
-          # # whiskey = inputs.nixpkgs.lib.nixosSystem {
-          # #   inherit system specialArgs;
-          # #   modules = [ ./whiskey.nix ../profiles/headless.nix ];
-          # # };
-
-          # live-iso = nixpkgs.lib.nixosSystem {
-          #   # inherit specialArgs;
-          #   system = "x86_64-linux";
-          #   check = false;
-          #   modules = [
-          #     ./live.nix
-          #     "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-          #   ];
-          # };
-      };
+      nixosConfigurations = import ./machines inputs;
     };
   };
 }
