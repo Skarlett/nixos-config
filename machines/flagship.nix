@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, lib, ... }:
+{ self, inputs, config, pkgs, lib, ... }:
 # let
    # dark_ghidra = pkgs.ghidra.overrideAttrs (old: {
    #   patches = (old.patches or []) ++ [];
@@ -8,9 +8,12 @@
   common.enable = true;
   networking.hostName = "flagship";
 
-  # home-manager.users.lunarix = import ../home-manager/flagship.nix;
-  # home-manager.useGlobalPkgs = true;
-  # home-manager.useUserPackages = true;
+  home-manager.users.lunarix = import ../home-manager/flagship.nix;
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.extraSpecialArgs = {
+    inherit self inputs;
+  };
 
   # Enable cap_sys_resource for noisetorch.
   security.wrappers.noisetorch = {
@@ -92,7 +95,7 @@
     file
     nixfmt
     noisetorch
-    self.inputs.deploy.packages."x86_64-linux".default
+    inputs.deploy.packages."x86_64-linux".default
     nfs-utils
   ];
 

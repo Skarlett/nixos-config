@@ -1,11 +1,11 @@
-{ config, nixpkgs, nixpkgs-unstable, pkgs2211, ... }:
+inputs@{ config, system, nixpkgs, nixpkgs-unstable, pkgs2211, ... }:
 let
-  import' = m: (import m) config;
+  import' = m: (import m) inputs;
   unstable' = import' nixpkgs-unstable;
   pkgs2211' = import' pkgs2211;
   nixpkgs' = import' nixpkgs;
 in
-(final: prev: {
+final: prev: {
   # flagship: spotify client makes my
   # system cough up blood
   spotify = pkgs2211'.spotify.override {
@@ -23,4 +23,4 @@ in
   };
 
   unstable = unstable';
-})
+}

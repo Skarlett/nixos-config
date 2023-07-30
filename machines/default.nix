@@ -20,9 +20,8 @@ let
 in
 {
 
-
   flagship = nixpkgs.lib.nixosSystem rec {
-    specialArgs = { inherit inputs; };
+    specialArgs = { inherit inputs self; };
     system = "x86_64-linux";
     modules = custom-modules ++ [
       ./flagship.nix
@@ -30,23 +29,37 @@ in
       ../modules/lightbuild.nix
       ({lib, ... }:
       {
-        _module.args.pkgs = lib.mkForce (import inputs.nixpkgs rec {
-          inherit system;
-          config.allowUnfree = true;
-          overlays =
-            let
-              functor = (self.lib.applyOverlay { inherit system config; });
-            in
-              (map functor [ self.overlays.flagship-custom ])
-              ++ [
-                inputs.vscode-extensions.overlays.default
-                inputs.nix-alien.overlays.default
-                inputs.nur.overlay
-                inputs.chaotic.overlays.default
-              ];
-          });
-        })
-      ];
+        nixpkgs.overlays =
+          let
+            functor = (self.lib.applyOverlay { inherit system; config.allowUnfree = true; });
+          in
+            (map functor [ self.overlays.flagship-custom ])
+            ++ [
+              inputs.vscode-extensions.overlays.default
+              inputs.nix-alien.overlays.default
+              inputs.nur.overlay
+              inputs.chaotic.overlays.default
+            ];
+
+        }
+
+        # _module.args.pkgs = lib.mkForce (import inputs.nixpkgs rec {
+        #   inherit system;
+        #   config.allowUnfree = true;
+        #   overlays =
+        #     let
+        #       functor = (self.lib.applyOverlay { inherit system config; });
+        #     in
+        #       (map functor [ self.overlays.flagship-custom ])
+        #       ++ [
+        #         inputs.vscode-extensions.overlays.default
+        #         inputs.nix-alien.overlays.default
+        #         inputs.nur.overlay
+        #         inputs.chaotic.overlays.default
+        #       ];
+        #   });
+        # })
+      )];
     };
 
   charmander = nixpkgs.lib.nixosSystem rec {

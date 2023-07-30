@@ -3,7 +3,6 @@ let
   cfg = config.common;
 in
 {
-
   options.common.enable = lib.mkEnableOption "Enable common configuration";
   config = lib.mkIf cfg.enable {
     time.timeZone = "America/Chicago";

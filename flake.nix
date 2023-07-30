@@ -79,6 +79,7 @@ rec {
 
     flake = {
       lib.applyOverlay = {system, config}: o:
+
           if (builtins.isFunction o) then
             o (inputs // { inherit system config; })
           else
