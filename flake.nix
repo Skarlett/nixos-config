@@ -105,6 +105,11 @@ rec {
       };
 
       nixosConfigurations = import ./machines inputs;
+
+      deploy.nodes = import ./deployments.nix {
+        inherit self;
+        inherit (inputs) deploy;
+      };
     };
   };
 }
