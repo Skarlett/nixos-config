@@ -172,8 +172,10 @@ jobs:
         with:
           name: flake_lock
       - name: Build everything
+        env:
+          NIXPKGS_ALLOW_UNFREE: 1
         run: |
-          nix flake check --keep-going
+          nix flake check --keep-going --impure
 
   push_update:
     runs-on: ubuntu-20.04
