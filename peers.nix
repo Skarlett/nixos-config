@@ -177,11 +177,7 @@ with lib;
         51820
       ];
 
-      # TODO:
-      #   mp bpg,
-      #   evpn,
-      #   vxlan,
-      #   over wireguard
+      # TODO: mp bpg, evpn, vxlan, over wireguard
       wireguard.interfaces.luni = {
         postSetup = ''
             ${pkgs.iptables}/bin/ip6tables -A FORWARD -i luni -j ACCEPT

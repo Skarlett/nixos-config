@@ -19,21 +19,19 @@ rec {
     deploy.url = "github:serokell/deploy-rs";
     utils.url = "github:numtide/flake-utils";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    gomod2nix.url = "github:nix-community/gomod2nix";
 
-    # dns = {
-    #   url = "github:kirelagin/dns.nix";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+    dns = {
+      url = "github:kirelagin/dns.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # devenv.url = "github:cachix/devenv";
     parts.url = "github:hercules-ci/flake-parts";
-    nixos-flake.url = "github:srid/nixos-flake/fed64870d63139bd4488999a607830ca7c9125ff";
 
     # remove eventually
     hm.url = "github:nix-community/home-manager/release-23.05";
     vscode-extensions.url = "github:nix-community/nix-vscode-extensions";
-    # nix-doom-emacs.url = "github:nix-community/nix-doom-emacs";
-    # emacs-overlay.url = "github:nix-community/emacs-overlay";
   };
 
   outputs = inputs@{parts, self, nixpkgs, ...}:
@@ -41,21 +39,27 @@ rec {
 
     imports = [
       parts.flakeModules.easyOverlay
+      # inputs.devenv.flakeModule
     ];
 
     systems = [
       "x86_64-linux"
-      # "aarch64-linux"
+      "aarch64-linux"
     ];
 
-    perSystem = args@{ config, self', inputs', pkgs, system, ... }:
-    {
+    perSystem = args@{ config, self', inputs', pkgs, system, ... }: {
       overlayAttrs = config.packages;
+
+      # wait for resolve
+      # https://github.com/cachix/devenv/issues/760
+      # devenv.shells.default = import ./devenv ( args // { inherit self; });
+
       packages.airsonic-advanced-war = pkgs.callPackage ./packages/airsonic-advanced.nix {};
       packages.unallocatedspace-frontend = pkgs.callPackage ./packages/unallocatedspace.dev {
         FQDN = "unallocatedspace.dev";
         REDIRECT = "https://github.com/skarlett";
       };
+
       packages.pzupdate = pkgs.callPackage ./packages/pzserver/pzupdate.nix {
         pzdir = "/srv/planetz";
       };
@@ -73,17 +77,24 @@ rec {
         in
           conf-builder ./packages/pzserver/servertest "servertest";
 
-      packages.pzstart =
-        pkgs.callPackage ./packages/pzserver/pzstart.nix { inherit (self'.packages) pzupdate pzconfig; };
+      packages.pzstart = pkgs.callPackage ./packages/pzserver/pzstart.nix {
+        inherit (config.packages) pzupdate pzconfig;
+      };
+
+      packages.ferret = pkgs.callPackage ./packages/ferret {};
+
+      packages.all = pkgs.buildEnv {
+        name = "flake packages";
+        paths = builtins.attrValues (builtins.removeAttrs config.packages ["all"]);
+      };
     };
 
     flake = {
       lib.applyOverlay = {system, config}: o:
-
-          if (builtins.isFunction o) then
-            o (inputs // { inherit system config; })
-          else
-            o;
+        if (builtins.isFunction o) then
+          o (inputs // { inherit system config; })
+        else
+          o;
 
       nixosModules = {
         common = import ./modules/common.nix;
@@ -96,8 +107,7 @@ rec {
         airsonic-advanced = import ./modules/airsonic-advanced.nix;
       };
 
-      overlays =
-      {
+      overlays = {
         flagship-custom = import ./overlays/flagship.nix;
         project-zomboid = import ./overlays/project-zomboid.nix;
         airsonic-advanced = import ./overlays/airsonic-advanced.nix;
@@ -105,7 +115,6 @@ rec {
       };
 
       nixosConfigurations = import ./machines inputs;
-
       deploy.nodes = import ./deployments.nix {
         inherit self;
         inherit (inputs) deploy;
