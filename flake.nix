@@ -99,8 +99,8 @@ rec {
       nixosModules = {
         common = import ./modules/common.nix;
         remote-access = import ./modules/accessible.nix;
-        keys = import ./keys.nix;
-        luninet = import ./peers.nix;
+        keys = import ./modules/keys.nix;
+        luninet = import ./modules/peers.nix;
         arl-scrape = import ./modules/arl-scrape.nix;
         project-zomboid = import ./modules/project-zomboid.nix;
         unallocatedspace = import ./modules/unallocatedspace.nix;
