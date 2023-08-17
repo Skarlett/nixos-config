@@ -17,4 +17,8 @@ buildGoModule {
     "-linkmode external"
     "-extldflags '-static -L${musl}/lib'"
   ];
+
+  postInstall = ''
+    mv $out/bin/e2e $out/bin/ferret
+  '';
 }
