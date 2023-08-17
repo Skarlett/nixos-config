@@ -56,8 +56,6 @@ in
       allowedUDPPorts = [ cfg.port ];
     };
 
-
-
     boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
     boot.kernel.sysctl."net.ipv6.conf.all.ip_forward" = 1;
     # fd01:8cae:d246:5f03:XXXX:XXXX:XXXX:XXXX
@@ -73,9 +71,6 @@ in
             # ${pkgs.iptables}/bin/ip6tables -D FORWARD -i wg0 -j ACCEPT
             # ${pkgs.iptables}/bin/ip6tables -t nat -D POSTROUTING -s fdc9:281f:04d7:9ee9::1/64 -o eth0 -j MASQUERADE
             # '';
-
-
-
         peers = cfg.peers;
         ips = cfg.ips;
         listenPort = cfg.port;
