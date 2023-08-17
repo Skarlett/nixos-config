@@ -37,6 +37,7 @@ in
       group = "users";
     };
 
+    boot.loader.grub.configurationLimit = 10;
     services.xserver.layout = "us";
     programs.fish.enable = true;
 
@@ -51,5 +52,6 @@ in
         options = "--delete-older-than 30d";
       };
     };
+
   };
 }
