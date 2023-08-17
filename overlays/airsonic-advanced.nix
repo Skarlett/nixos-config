@@ -1,7 +1,4 @@
-{nixpkgs, config, ...}:
-let
-  nixpkgs' = import nixpkgs config;
-in
+{config, ...}:
 final: prev: {
-  airsonic-advanced = nixpkgs'.callPackage ./packages/airsonic-advanced.nix {};
+  airsonic-advanced = prev.callPackage ./packages/airsonic-advanced.nix {};
 }
