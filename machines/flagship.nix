@@ -97,6 +97,8 @@
     noisetorch
     inputs.deploy.packages."x86_64-linux".default
     nfs-utils
+
+    f2fs-tools
   ];
 
   services.printing.enable = true;
