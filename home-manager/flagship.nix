@@ -70,6 +70,7 @@
     openvpn
     obsidian
     anydesk
+    grc
 
     lldb
     glfw

@@ -8,12 +8,29 @@
           $argv > /dev/null 2>&1 &
           disown
         end
+
+        export MANPAGER="less -R --use-color -Dd+r -Du+b"
     '';
 
     shellAliases =
     {
-        ip="ip --color=auto";
+        ip="grc ip --color=auto";
+        ping="grc ping";
+        traceroute="grc traceroute";
+        dig="grc dig";
+        tcpdump="grc tcpdump";
+        whois="grc whois";
+        sysctl="grc sysctl";
+        netstat="grc netstat";
+        ps="grc ps";
+        uptime="grc uptime";
+        pv="grc pv";
+        ss="grc ss";
+        df="grc df";
+        findmnt="grc findmnt";
+        lsblk="grc lsblk";
         ls="lsd --color always";
+
         l="ls -la";
         la="ls -a";
         lt="ls -tree";
