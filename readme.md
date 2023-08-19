@@ -12,3 +12,6 @@ the current systems are the following:
     - `nix build .#nixosConfigurations.coggie.config.system.build.sdImage`
     - `zstd -dc /dev/mmcblk0`
     - `deploy-rs -s`
+
+- `nixosConfigurations.live-iso`
+  - `nix build .#nixosConfigurations.live-iso.config.system.build.isoImage`
