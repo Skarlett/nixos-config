@@ -13,7 +13,6 @@
     shellAliases =
     {
         ip="ip --color=auto";
-        #ssh="set TERM=xterm-256color; ssh";
         ls="lsd --color always";
         l="ls -la";
         la="ls -a";
