@@ -2,7 +2,7 @@ rec {
   description = "NixOS configuration";
   inputs = {
     # Pinned
-    coggiebot.url = "github:skarlett/coggie-bot/d040dfe03f612120263386f1f1eda3116c4fb235";
+    coggiebot.url = "github:skarlett/coggie-bot";
     coggiebot.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     # Rolling
@@ -19,7 +19,7 @@ rec {
     deploy.url = "github:serokell/deploy-rs";
     utils.url = "github:numtide/flake-utils";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    gomod2nix.url = "github:nix-community/gomod2nix";
+    impermanence.url = "github:nix-community/impermanence";
 
     dns = {
       url = "github:kirelagin/dns.nix";
@@ -49,7 +49,6 @@ rec {
 
     perSystem = args@{ config, self', inputs', pkgs, system, ... }: {
       overlayAttrs = config.packages;
-
       # wait for resolve
       # https://github.com/cachix/devenv/issues/760
       # devenv.shells.default = import ./devenv ( args // { inherit self; });
@@ -70,18 +69,17 @@ rec {
             inherit name src;
             phases = "installPhase";
             installPhase = ''
-            mkdir -p $out
-            cp -r $src $out
+              mkdir -p $out
+              cp -r $src $out
             '';
           };
         in
           conf-builder ./packages/pzserver/servertest "servertest";
 
+      packages.ferret = pkgs.callPackage ./packages/ferret {};
       packages.pzstart = pkgs.callPackage ./packages/pzserver/pzstart.nix {
         inherit (config.packages) pzupdate pzconfig;
       };
-
-      packages.ferret = pkgs.callPackage ./packages/ferret {};
 
       packages.all = pkgs.buildEnv {
         name = "flake packages";
