@@ -103,7 +103,6 @@ in
   coggie = nixpkgs.lib.nixosSystem
     {
       system = "aarch64-linux";
-
       modules = custom-modules ++ [
         ./coggie.nix
         ./coggie.hardware.nix
@@ -118,6 +117,15 @@ in
       { config._module.check = false; }
       ./live.nix
       "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+    ];
+  };
+
+
+  cypress = nixpkgs.lib.nixosSystem {
+    system = "x86_64-linux";
+    modules = custom-modules ++ [
+      ./cypress.nix
+      ./cypress.hardware.nix
     ];
   };
 

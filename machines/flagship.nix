@@ -8,6 +8,12 @@
   common.enable = true;
   networking.hostName = "flagship";
 
+  security.sudo.wheelNeedsPassword = true;
+  security.sudo.package = pkgs.sudo.override { withInsults = true; };
+  security.sudo.extraConfig = ''
+    Defaults insults
+  '';
+
   home-manager.users.lunarix = import ../home-manager/flagship.nix;
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;

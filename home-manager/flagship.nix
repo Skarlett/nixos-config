@@ -72,6 +72,8 @@
     anydesk
     grc
 
+    element-desktop
+
     lldb
     glfw
     clang
