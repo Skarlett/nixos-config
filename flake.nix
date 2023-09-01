@@ -20,6 +20,7 @@ rec {
     utils.url = "github:numtide/flake-utils";
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     impermanence.url = "github:nix-community/impermanence";
+    cpkgs.url = "github:ChrisOboe/cpkgs/69e193a5112f682f86e5625358d62091bdc38019";
 
     dns = {
       url = "github:kirelagin/dns.nix";
@@ -75,6 +76,17 @@ rec {
           };
         in
           conf-builder ./packages/pzserver/servertest "servertest";
+
+      packages.streamrip = inputs.cpkgs.packages.${system}.streamrip.overrideAttrs (f: prev: {
+         version="1.9.8-dev";
+         src = pkgs.fetchFromGitHub {
+           owner = "nathom";
+           repo = "streamrip";
+           rev = "42b786b7f3c76caf84d5b461619073335e5863a5";
+           sha256 = "sha256-Mdj3zO4YJM++PetEhk0g24UABE4Sii0JkPVJP9D4AtI=";
+         };
+        }
+      );
 
       packages.ferret = pkgs.callPackage ./packages/ferret {};
       packages.pzstart = pkgs.callPackage ./packages/pzserver/pzstart.nix {
